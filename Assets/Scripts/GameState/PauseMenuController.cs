@@ -1,466 +1,667 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Localization;
-using UnityEngine.Rendering;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+using UnityEngine.Events;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.UI;
 
 public class PauseMenuController : MonoBehaviour
 {
-    private enum PauseRoot
+    private enum ActiveRoot
     {
-        Buttons,
+        Main,
         Save,
         Load
     }
 
-    [Header("References")]
-    [SerializeField] private GameInput gameInput;
-    [SerializeField] private GameObject pauseMenuRoot;
-    [SerializeField] private GameObject buttonsRoot;
-    [SerializeField] private GameObject saveRoot;
-    [SerializeField] private GameObject loadRoot;
-    [SerializeField] private SaveLoadPanelUI savePanel;
-    [SerializeField] private SaveLoadPanelUI loadPanel;
-    [SerializeField] private Button[] rootButtons;
-    [SerializeField] private Button resumeButton;
+    [Header("Main References")]
+    [SerializeField] private GameObject pauseCanvasRoot;
+    [SerializeField] private GameObject mainRoot;
+    [SerializeField] private PauseMenuSaveLoadRootUI saveRootUI;
+    [SerializeField] private PauseMenuSaveLoadRootUI loadRootUI;
+    [SerializeField] private PauseMenuSlotViewUI[] mainMenuSlots;
 
-    [Header("Pause Visual Effect")]
-    [SerializeField] private Volume pauseGrayScaleVolume;
-    [SerializeField, Range(0f, 1f)] private float pauseGrayScaleWeight = 1f;
+    [Header("Main Menu Text")]
+    [SerializeField] private string continueText = "Продолжить";
+    [SerializeField] private string saveText = "Сохранить игру";
+    [SerializeField] private string loadText = "Загрузить игру";
+    [SerializeField] private string quitText = "Выйти из игры";
 
-    [Header("Scene Transition")]
-    [SerializeField] private FullScreenFadeController fadeController;
-    [SerializeField] private string loadZoneSceneName = "LoadZone";
-    [SerializeField, Min(0.01f)] private float sceneFadeDuration = 0.35f;
+    [Header("Pause Visuals")]
+    [SerializeField] private GameObject pauseOverlayRoot;
+    [SerializeField] private GameObject quitMessageRoot;
 
-    [Header("Quit")]
-    [SerializeField] private LocalizedString quitMessage;
-    [SerializeField, Min(0.01f)] private float quitFadeDuration = 0.65f;
-    [SerializeField, Min(0f)] private float quitMessageHoldDuration = 1.2f;
+    [Header("Input")]
+    [SerializeField] private PlayerInput playerInput;
+    [SerializeField] private InputSystemUIInputModule inputModule;
+    [SerializeField] private string gameplayActionMapName = "Player";
+    [SerializeField] private string pauseActionMapName = "PauseMenu";
 
-    private GameInput subscribedInput;
-    private PauseRoot currentRoot = PauseRoot.Buttons;
-    private int selectedRootButtonIndex;
+    [SerializeField] private InputActionReference openPauseAction;
+    [SerializeField] private InputActionReference closePauseAction;
+    [SerializeField] private InputActionReference upSelectAction;
+    [SerializeField] private InputActionReference downSelectAction;
+    [SerializeField] private InputActionReference selectChoiceAction;
+    [SerializeField] private InputActionReference cancelAction;
+
+    [Header("Behaviour")]
+    [SerializeField] private bool manageTimeScale = true;
+    [SerializeField] private bool manageActionMaps = true;
+    [SerializeField] private bool openMenuOnStart = false;
+
+    [Header("Delays")]
+    [SerializeField] private float saveDelayAfterClose = 0.05f;
+    [SerializeField] private float loadDelayBeforeSaveLoadCall = 0.35f;
+    [SerializeField] private float quitDelay = 0.6f;
+
+    [Header("Project Hooks")]
+    [SerializeField] private UnityEvent onPauseOpened;
+    [SerializeField] private UnityEvent onPauseClosed;
+    [SerializeField] private UnityEvent onBeforeLoadTransition;
+    [SerializeField] private UnityEvent onQuitStarted;
+
+    private bool isOpen;
     private bool isBusy;
+    private ActiveRoot activeRoot = ActiveRoot.Main;
+    private int mainSelectionIndex;
+
+    public bool IsOpen => isOpen;
 
     private void Awake()
     {
-        ResolveReferences();
-        WireChildPanels();
-        ForceClosedVisual();
+        BindRootEvents();
+        ForceClosedState();
+    }
+
+    private void Start()
+    {
+        RefreshMainMenuVisuals();
+
+        if (openMenuOnStart)
+        {
+            OpenPauseMenu();
+        }
     }
 
     private void OnEnable()
     {
-        ResolveReferences();
-        WireChildPanels();
-        RebindInput();
-
-        if (GameStateManager.Instance != null)
-            GameStateManager.Instance.OnGameStateChanged += HandleGameStateChanged;
+        SubscribeInput();
     }
 
     private void OnDisable()
     {
-        UnbindInput();
+        UnsubscribeInput();
 
-        if (GameStateManager.Instance != null)
-            GameStateManager.Instance.OnGameStateChanged -= HandleGameStateChanged;
-    }
-
-    private void ResolveReferences()
-    {
-        if (gameInput == null)
-            gameInput = GameInput.Instance;
-
-        if (fadeController == null)
-            fadeController = FindFirstObjectByType<FullScreenFadeController>();
-    }
-
-    private void WireChildPanels()
-    {
-        if (savePanel != null)
+        if (manageTimeScale)
         {
-            savePanel.BackRequested -= ShowButtonsRoot;
-            savePanel.BackRequested += ShowButtonsRoot;
-        }
-
-        if (loadPanel != null)
-        {
-            loadPanel.BackRequested -= ShowButtonsRoot;
-            loadPanel.BackRequested += ShowButtonsRoot;
+            Time.timeScale = 1f;
         }
     }
 
-    private void RebindInput()
+    private void OnDestroy()
     {
-        UnbindInput();
-
-        if (gameInput == null)
-            return;
-
-        gameInput.OnPauseToggle += HandlePauseToggle;
-        gameInput.OnPauseMenuUp += HandlePauseMenuUp;
-        gameInput.OnPauseMenuDown += HandlePauseMenuDown;
-        gameInput.OnPauseMenuSelect += HandlePauseMenuSelect;
-        subscribedInput = gameInput;
+        UnbindRootEvents();
     }
 
-    private void UnbindInput()
+    private void BindRootEvents()
     {
-        if (subscribedInput == null)
-            return;
-
-        subscribedInput.OnPauseToggle -= HandlePauseToggle;
-        subscribedInput.OnPauseMenuUp -= HandlePauseMenuUp;
-        subscribedInput.OnPauseMenuDown -= HandlePauseMenuDown;
-        subscribedInput.OnPauseMenuSelect -= HandlePauseMenuSelect;
-        subscribedInput = null;
-    }
-
-    private void ForceClosedVisual()
-    {
-        ApplyClosedVisual(false);
-
-        if (pauseGrayScaleVolume != null)
-            pauseGrayScaleVolume.weight = 0f;
-
-        if (GameStateManager.Instance != null && GameStateManager.Instance.CurrentState == GameState.Pause)
-            GameStateManager.Instance.SetState(GameState.Playing);
-
-        if (gameInput != null)
-            gameInput.SwitchToPlayerMode();
-    }
-
-    private void ApplyClosedVisual(bool switchInputToPlayer)
-    {
-        currentRoot = PauseRoot.Buttons;
-        selectedRootButtonIndex = 0;
-
-        if (pauseMenuRoot != null)
-            pauseMenuRoot.SetActive(false);
-
-        if (buttonsRoot != null)
-            buttonsRoot.SetActive(true);
-
-        if (saveRoot != null)
-            saveRoot.SetActive(false);
-
-        if (loadRoot != null)
-            loadRoot.SetActive(false);
-
-        if (pauseGrayScaleVolume != null)
-            pauseGrayScaleVolume.weight = 0f;
-
-        if (switchInputToPlayer && gameInput != null)
-            gameInput.SwitchToPlayerMode();
-    }
-
-    private void HandlePauseToggle()
-    {
-        if (isBusy || GameStateManager.Instance == null || gameInput == null)
-            return;
-
-        if (GameStateManager.Instance.CurrentState == GameState.Playing)
+        if (saveRootUI != null)
         {
-            OpenPauseMenu();
+            saveRootUI.DataSlotChosen += HandleSaveSlotChosen;
+            saveRootUI.BackRequested += HandleSaveBackRequested;
+        }
+
+        if (loadRootUI != null)
+        {
+            loadRootUI.DataSlotChosen += HandleLoadSlotChosen;
+            loadRootUI.BackRequested += HandleLoadBackRequested;
+        }
+    }
+
+    private void UnbindRootEvents()
+    {
+        if (saveRootUI != null)
+        {
+            saveRootUI.DataSlotChosen -= HandleSaveSlotChosen;
+            saveRootUI.BackRequested -= HandleSaveBackRequested;
+        }
+
+        if (loadRootUI != null)
+        {
+            loadRootUI.DataSlotChosen -= HandleLoadSlotChosen;
+            loadRootUI.BackRequested -= HandleLoadBackRequested;
+        }
+    }
+
+    private void SubscribeInput()
+    {
+        SubscribeAction(openPauseAction, HandleOpenPausePerformed);
+        SubscribeAction(closePauseAction, HandleClosePausePerformed);
+        SubscribeAction(upSelectAction, HandleUpPerformed);
+        SubscribeAction(downSelectAction, HandleDownPerformed);
+        SubscribeAction(selectChoiceAction, HandleSubmitPerformed);
+        SubscribeAction(cancelAction, HandleCancelPerformed);
+    }
+
+    private void UnsubscribeInput()
+    {
+        UnsubscribeAction(openPauseAction, HandleOpenPausePerformed);
+        UnsubscribeAction(closePauseAction, HandleClosePausePerformed);
+        UnsubscribeAction(upSelectAction, HandleUpPerformed);
+        UnsubscribeAction(downSelectAction, HandleDownPerformed);
+        UnsubscribeAction(selectChoiceAction, HandleSubmitPerformed);
+        UnsubscribeAction(cancelAction, HandleCancelPerformed);
+    }
+
+    private void SubscribeAction(InputActionReference actionReference, System.Action<InputAction.CallbackContext> callback)
+    {
+        if (actionReference == null || actionReference.action == null)
+        {
             return;
         }
 
-        if (GameStateManager.Instance.CurrentState != GameState.Pause)
-            return;
+        actionReference.action.performed += callback;
+    }
 
-        if (currentRoot != PauseRoot.Buttons)
+    private void UnsubscribeAction(InputActionReference actionReference, System.Action<InputAction.CallbackContext> callback)
+    {
+        if (actionReference == null || actionReference.action == null)
         {
-            ShowButtonsRoot();
             return;
         }
 
-        ResumeGame();
+        actionReference.action.performed -= callback;
     }
 
-    private void HandlePauseMenuUp()
+    private void HandleOpenPausePerformed(InputAction.CallbackContext context)
     {
-        if (isBusy || GameStateManager.Instance == null || GameStateManager.Instance.CurrentState != GameState.Pause)
+        if (isBusy || isOpen)
+        {
             return;
+        }
+
+        OpenPauseMenu();
+    }
+
+    private void HandleClosePausePerformed(InputAction.CallbackContext context)
+    {
+        if (isBusy || !isOpen)
+        {
+            return;
+        }
+
+        ClosePauseMenu();
+    }
+
+    private void HandleUpPerformed(InputAction.CallbackContext context)
+    {
+        if (isBusy || !isOpen)
+        {
+            return;
+        }
 
         MoveSelection(-1);
     }
 
-    private void HandlePauseMenuDown()
+    private void HandleDownPerformed(InputAction.CallbackContext context)
     {
-        if (isBusy || GameStateManager.Instance == null || GameStateManager.Instance.CurrentState != GameState.Pause)
-            return;
-
-        MoveSelection(1);
-    }
-
-    private void HandlePauseMenuSelect()
-    {
-        if (isBusy || GameStateManager.Instance == null || GameStateManager.Instance.CurrentState != GameState.Pause)
-            return;
-
-        SubmitSelection();
-    }
-
-    private void MoveSelection(int direction)
-    {
-        switch (currentRoot)
+        if (isBusy || !isOpen)
         {
-            case PauseRoot.Save:
-                if (savePanel != null)
-                    savePanel.MoveSelection(direction);
-                break;
-
-            case PauseRoot.Load:
-                if (loadPanel != null)
-                    loadPanel.MoveSelection(direction);
-                break;
-
-            default:
-                MoveRootButtonSelection(direction);
-                break;
-        }
-    }
-
-    private void SubmitSelection()
-    {
-        switch (currentRoot)
-        {
-            case PauseRoot.Save:
-                if (savePanel != null)
-                    savePanel.Submit();
-                break;
-
-            case PauseRoot.Load:
-                if (loadPanel != null)
-                    loadPanel.Submit();
-                break;
-
-            default:
-                InvokeSelectedRootButton();
-                break;
-        }
-    }
-
-    private void MoveRootButtonSelection(int direction)
-    {
-        List<Button> buttons = GetAvailableRootButtons();
-        if (buttons.Count == 0)
             return;
-
-        selectedRootButtonIndex = (selectedRootButtonIndex + direction) % buttons.Count;
-
-        if (selectedRootButtonIndex < 0)
-            selectedRootButtonIndex += buttons.Count;
-
-        ApplyRootButtonSelection();
-    }
-
-    private void InvokeSelectedRootButton()
-    {
-        List<Button> buttons = GetAvailableRootButtons();
-        if (buttons.Count == 0)
-            return;
-
-        selectedRootButtonIndex = Mathf.Clamp(selectedRootButtonIndex, 0, buttons.Count - 1);
-        buttons[selectedRootButtonIndex].onClick.Invoke();
-    }
-
-    private List<Button> GetAvailableRootButtons()
-    {
-        List<Button> buttons = new List<Button>();
-
-        if (rootButtons == null)
-            return buttons;
-
-        for (int i = 0; i < rootButtons.Length; i++)
-        {
-            if (rootButtons[i] != null && rootButtons[i].isActiveAndEnabled)
-                buttons.Add(rootButtons[i]);
         }
 
-        return buttons;
+        MoveSelection(+1);
     }
 
-    private int GetInitialRootButtonIndex()
+    private void HandleSubmitPerformed(InputAction.CallbackContext context)
     {
-        List<Button> buttons = GetAvailableRootButtons();
-        if (buttons.Count == 0)
-            return -1;
-
-        if (resumeButton != null)
+        if (isBusy || !isOpen)
         {
-            int resumeIndex = buttons.IndexOf(resumeButton);
-            if (resumeIndex >= 0)
-                return resumeIndex;
+            return;
         }
 
-        return 0;
+        SubmitCurrentSelection();
     }
 
-    private void ApplyRootButtonSelection()
+    private void HandleCancelPerformed(InputAction.CallbackContext context)
     {
-        List<Button> buttons = GetAvailableRootButtons();
-        if (buttons.Count == 0)
+        if (isBusy || !isOpen)
+        {
             return;
+        }
 
-        selectedRootButtonIndex = Mathf.Clamp(selectedRootButtonIndex, 0, buttons.Count - 1);
-        buttons[selectedRootButtonIndex].Select();
-    }
-
-    private void HandleGameStateChanged(GameState newState)
-    {
-        if (newState == GameState.Pause)
+        if (activeRoot == ActiveRoot.Main)
+        {
+            ClosePauseMenu();
             return;
+        }
 
-        ApplyClosedVisual(false);
+        ShowMainRoot();
     }
 
-    private void OpenPauseMenu()
+    public void OpenPauseMenu()
     {
-        GameStateManager.Instance.SetState(GameState.Pause);
+        if (isOpen)
+        {
+            return;
+        }
 
-        if (pauseMenuRoot != null)
-            pauseMenuRoot.SetActive(true);
+        isOpen = true;
+        activeRoot = ActiveRoot.Main;
 
-        if (pauseGrayScaleVolume != null)
-            pauseGrayScaleVolume.weight = pauseGrayScaleWeight;
+        if (pauseCanvasRoot != null)
+        {
+            pauseCanvasRoot.SetActive(true);
+        }
 
-        if (gameInput != null)
-            gameInput.SwitchToPauseMenuMode();
+        if (pauseOverlayRoot != null)
+        {
+            pauseOverlayRoot.SetActive(true);
+        }
 
-        ShowButtonsRoot();
+        if (quitMessageRoot != null)
+        {
+            quitMessageRoot.SetActive(false);
+        }
+
+        if (manageTimeScale)
+        {
+            Time.timeScale = 0f;
+        }
+
+        if (manageActionMaps && playerInput != null && !string.IsNullOrWhiteSpace(pauseActionMapName))
+        {
+            playerInput.SwitchCurrentActionMap(pauseActionMapName);
+        }
+
+        ShowMainRoot();
+        onPauseOpened?.Invoke();
     }
 
-    public void ShowButtonsRoot()
+    public void ClosePauseMenu()
     {
-        currentRoot = PauseRoot.Buttons;
+        if (!isOpen)
+        {
+            return;
+        }
 
-        if (buttonsRoot != null)
-            buttonsRoot.SetActive(true);
+        isOpen = false;
+        activeRoot = ActiveRoot.Main;
 
-        if (saveRoot != null)
-            saveRoot.SetActive(false);
+        HideAllRoots();
 
-        if (loadRoot != null)
-            loadRoot.SetActive(false);
+        if (pauseOverlayRoot != null)
+        {
+            pauseOverlayRoot.SetActive(false);
+        }
 
-        selectedRootButtonIndex = GetInitialRootButtonIndex();
-        ApplyRootButtonSelection();
+        if (pauseCanvasRoot != null)
+        {
+            pauseCanvasRoot.SetActive(false);
+        }
+
+        if (quitMessageRoot != null)
+        {
+            quitMessageRoot.SetActive(false);
+        }
+
+        if (manageActionMaps && playerInput != null && !string.IsNullOrWhiteSpace(gameplayActionMapName))
+        {
+            playerInput.SwitchCurrentActionMap(gameplayActionMapName);
+        }
+
+        if (manageTimeScale)
+        {
+            Time.timeScale = 1f;
+        }
+
+        onPauseClosed?.Invoke();
     }
 
-    public void OpenSaveRoot()
+    public void TogglePauseMenu()
     {
-        currentRoot = PauseRoot.Save;
-
-        if (buttonsRoot != null)
-            buttonsRoot.SetActive(false);
-
-        if (saveRoot != null)
-            saveRoot.SetActive(true);
-
-        if (loadRoot != null)
-            loadRoot.SetActive(false);
-
-        if (savePanel != null)
-            savePanel.Show();
-    }
-
-    public void OpenLoadRoot()
-    {
-        currentRoot = PauseRoot.Load;
-
-        if (buttonsRoot != null)
-            buttonsRoot.SetActive(false);
-
-        if (saveRoot != null)
-            saveRoot.SetActive(false);
-
-        if (loadRoot != null)
-            loadRoot.SetActive(true);
-
-        if (loadPanel != null)
-            loadPanel.Show();
+        if (isOpen)
+        {
+            ClosePauseMenu();
+        }
+        else
+        {
+            OpenPauseMenu();
+        }
     }
 
     public void ResumeGame()
     {
-        if (GameStateManager.Instance != null)
-            GameStateManager.Instance.SetState(GameState.Playing);
-
-        ApplyClosedVisual(true);
+        ClosePauseMenu();
     }
 
-    public void OnResumePressed()
+    public void OpenSaveRoot()
     {
-        ResumeGame();
+        if (!isOpen || saveRootUI == null)
+        {
+            return;
+        }
+
+        activeRoot = ActiveRoot.Save;
+
+        if (mainRoot != null)
+        {
+            mainRoot.SetActive(false);
+        }
+
+        if (loadRootUI != null)
+        {
+            loadRootUI.HideRoot();
+        }
+
+        saveRootUI.ShowRoot();
     }
 
-    public void OnOpenSavePressed()
+    public void OpenLoadRoot()
     {
-        OpenSaveRoot();
+        if (!isOpen || loadRootUI == null)
+        {
+            return;
+        }
+
+        activeRoot = ActiveRoot.Load;
+
+        if (mainRoot != null)
+        {
+            mainRoot.SetActive(false);
+        }
+
+        if (saveRootUI != null)
+        {
+            saveRootUI.HideRoot();
+        }
+
+        loadRootUI.ShowRoot();
     }
 
-    public void OnOpenLoadPressed()
+    public void ShowMainRoot()
     {
-        OpenLoadRoot();
+        activeRoot = ActiveRoot.Main;
+
+        if (mainRoot != null)
+        {
+            mainRoot.SetActive(true);
+        }
+
+        if (saveRootUI != null)
+        {
+            saveRootUI.HideRoot();
+        }
+
+        if (loadRootUI != null)
+        {
+            loadRootUI.HideRoot();
+        }
+
+        RefreshMainMenuVisuals();
     }
 
-    public void OnExitToLoadZonePressed()
+    private void HideAllRoots()
+    {
+        if (mainRoot != null)
+        {
+            mainRoot.SetActive(false);
+        }
+
+        if (saveRootUI != null)
+        {
+            saveRootUI.HideRoot();
+        }
+
+        if (loadRootUI != null)
+        {
+            loadRootUI.HideRoot();
+        }
+    }
+
+    private void ForceClosedState()
+    {
+        isOpen = false;
+        isBusy = false;
+        activeRoot = ActiveRoot.Main;
+
+        if (pauseCanvasRoot != null)
+        {
+            pauseCanvasRoot.SetActive(false);
+        }
+
+        if (pauseOverlayRoot != null)
+        {
+            pauseOverlayRoot.SetActive(false);
+        }
+
+        if (quitMessageRoot != null)
+        {
+            quitMessageRoot.SetActive(false);
+        }
+
+        HideAllRoots();
+
+        if (manageTimeScale)
+        {
+            Time.timeScale = 1f;
+        }
+    }
+
+    private void MoveSelection(int direction)
+    {
+        switch (activeRoot)
+        {
+            case ActiveRoot.Main:
+                MoveMainSelection(direction);
+                break;
+
+            case ActiveRoot.Save:
+                saveRootUI?.MoveSelection(direction);
+                break;
+
+            case ActiveRoot.Load:
+                loadRootUI?.MoveSelection(direction);
+                break;
+        }
+    }
+
+    private void SubmitCurrentSelection()
+    {
+        switch (activeRoot)
+        {
+            case ActiveRoot.Main:
+                SubmitMainSelection();
+                break;
+
+            case ActiveRoot.Save:
+                saveRootUI?.SubmitCurrentSelection();
+                break;
+
+            case ActiveRoot.Load:
+                loadRootUI?.SubmitCurrentSelection();
+                break;
+        }
+    }
+
+    private void MoveMainSelection(int direction)
+    {
+        if (mainMenuSlots == null || mainMenuSlots.Length == 0)
+        {
+            return;
+        }
+
+        mainSelectionIndex += direction;
+
+        if (mainSelectionIndex < 0)
+        {
+            mainSelectionIndex = mainMenuSlots.Length - 1;
+        }
+        else if (mainSelectionIndex >= mainMenuSlots.Length)
+        {
+            mainSelectionIndex = 0;
+        }
+
+        RefreshMainMenuVisuals();
+    }
+
+    private void RefreshMainMenuVisuals()
+    {
+        if (mainMenuSlots == null || mainMenuSlots.Length == 0)
+        {
+            return;
+        }
+
+        if (mainSelectionIndex < 0 || mainSelectionIndex >= mainMenuSlots.Length)
+        {
+            mainSelectionIndex = 0;
+        }
+
+        if (mainMenuSlots.Length > 0 && mainMenuSlots[0] != null)
+        {
+            mainMenuSlots[0].ShowAsMainOption(continueText);
+            mainMenuSlots[0].SetSelected(mainSelectionIndex == 0);
+        }
+
+        if (mainMenuSlots.Length > 1 && mainMenuSlots[1] != null)
+        {
+            mainMenuSlots[1].ShowAsMainOption(saveText);
+            mainMenuSlots[1].SetSelected(mainSelectionIndex == 1);
+        }
+
+        if (mainMenuSlots.Length > 2 && mainMenuSlots[2] != null)
+        {
+            mainMenuSlots[2].ShowAsMainOption(loadText);
+            mainMenuSlots[2].SetSelected(mainSelectionIndex == 2);
+        }
+
+        if (mainMenuSlots.Length > 3 && mainMenuSlots[3] != null)
+        {
+            mainMenuSlots[3].ShowAsMainOption(quitText);
+            mainMenuSlots[3].SetSelected(mainSelectionIndex == 3);
+        }
+    }
+
+    private void SubmitMainSelection()
+    {
+        switch (mainSelectionIndex)
+        {
+            case 0:
+                ClosePauseMenu();
+                break;
+
+            case 1:
+                OpenSaveRoot();
+                break;
+
+            case 2:
+                OpenLoadRoot();
+                break;
+
+            case 3:
+                StartCoroutine(QuitRoutine());
+                break;
+        }
+    }
+
+    private void HandleSaveSlotChosen(int slotIndex)
     {
         if (isBusy)
+        {
             return;
+        }
 
-        StartCoroutine(LoadSceneRoutine(loadZoneSceneName));
+        StartCoroutine(SaveRoutine(slotIndex));
     }
 
-    public void OnQuitGamePressed()
+    private void HandleLoadSlotChosen(int slotIndex)
     {
         if (isBusy)
+        {
             return;
+        }
 
-        StartCoroutine(QuitRoutine());
+        StartCoroutine(LoadRoutine(slotIndex));
     }
 
-    private IEnumerator LoadSceneRoutine(string sceneName)
+    private void HandleSaveBackRequested()
+    {
+        ShowMainRoot();
+        mainSelectionIndex = 1;
+        RefreshMainMenuVisuals();
+    }
+
+    private void HandleLoadBackRequested()
+    {
+        ShowMainRoot();
+        mainSelectionIndex = 2;
+        RefreshMainMenuVisuals();
+    }
+
+    private IEnumerator SaveRoutine(int slotIndex)
     {
         isBusy = true;
 
-        if (GameStateManager.Instance != null)
-            GameStateManager.Instance.SetState(GameState.Playing);
+        ClosePauseMenu();
 
-        Time.timeScale = 1f;
-        ApplyClosedVisual(false);
+        yield return null;
+        yield return new WaitForEndOfFrame();
 
-        if (fadeController != null)
-            yield return fadeController.FadeOut(sceneFadeDuration);
+        if (saveDelayAfterClose > 0f)
+        {
+            yield return new WaitForSecondsRealtime(saveDelayAfterClose);
+        }
 
-        SceneManager.LoadScene(sceneName);
+        if (saveRootUI != null && saveRootUI.SaveAdapter != null)
+        {
+            saveRootUI.SaveAdapter.SaveToSlot(slotIndex);
+        }
+
+        isBusy = false;
+    }
+
+    private IEnumerator LoadRoutine(int slotIndex)
+    {
+        isBusy = true;
+
+        ClosePauseMenu();
+
+        onBeforeLoadTransition?.Invoke();
+
+        if (loadDelayBeforeSaveLoadCall > 0f)
+        {
+            yield return new WaitForSecondsRealtime(loadDelayBeforeSaveLoadCall);
+        }
+
+        if (loadRootUI != null && loadRootUI.SaveAdapter != null)
+        {
+            loadRootUI.SaveAdapter.LoadFromSlot(slotIndex);
+        }
+
+        isBusy = false;
     }
 
     private IEnumerator QuitRoutine()
     {
         isBusy = true;
 
-        if (GameStateManager.Instance != null)
-            GameStateManager.Instance.SetState(GameState.Playing);
+        if (quitMessageRoot != null)
+        {
+            quitMessageRoot.SetActive(true);
+        }
 
-        Time.timeScale = 1f;
-        ApplyClosedVisual(false);
+        onQuitStarted?.Invoke();
 
-        if (fadeController != null)
-            yield return fadeController.FadeOutWithMessage(quitMessage, quitFadeDuration, quitMessageHoldDuration);
-        else if (quitMessageHoldDuration > 0f)
-            yield return new WaitForSecondsRealtime(quitMessageHoldDuration);
+        if (quitDelay > 0f)
+        {
+            yield return new WaitForSecondsRealtime(quitDelay);
+        }
 
 #if UNITY_EDITOR
-        Debug.Log("PauseMenuController: quit requested.");
         UnityEditor.EditorApplication.isPlaying = false;
 #else
         Application.Quit();
 #endif
+
+        isBusy = false;
     }
 }
