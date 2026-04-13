@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 684c043336e34324b8fd191c96c41dd5, type: 3}
+  m_Name: gold_coin
+  m_EditorClassIdentifier: Assembly-CSharp::ItemData
+  itemId: gold_coin
+  itemType: 0
+  icon: {fileID: 6905159096273010811, guid: b187cc9f2c641894f990c0af60ab8fe1, type: 3}
+  itemName:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  itemDescription:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  stackable: 1
+  consumableEffectType: 0
+  consumableValue: 0
+  consumableDuration: 0
+  equipmentStrengthBonus: 1
+  equipmentManaBonus: 1
+  equipmentDefenceBonus: 1
+  references:
+    version: 2
+    RefIds: []

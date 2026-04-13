@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: QuestJournal Shared Data
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
+  m_TableCollectionName: QuestJournal
+  m_TableCollectionNameGuidString: 789b5b6146da7c24a833495cc5368bac
+  m_Entries:
+  - m_Id: 32155447296
+    m_Key: questJournal.ActiveSection
+    m_Metadata:
+      m_Items: []
+  - m_Id: 183896977408
+    m_Key: questJournal.CompleteSection
+    m_Metadata:
+      m_Items: []
+  - m_Id: 272711364608
+    m_Key: questJournal.pinButton
+    m_Metadata:
+      m_Items: []
+  - m_Id: 425077846016
+    m_Key: questJournal.unpinButton
+    m_Metadata:
+      m_Items: []
+  - m_Id: 531931934720
+    m_Key: questJournal.pinMax
+    m_Metadata:
+      m_Items: []
+  - m_Id: 636282023936
+    m_Key: questJournal.notStarted
+    m_Metadata:
+      m_Items: []
+  - m_Id: 776023650304
+    m_Key: questJournal.Active
+    m_Metadata:
+      m_Items: []
+  - m_Id: 883167145984
+    m_Key: questJournal.readyToTurn
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1063975202816
+    m_Key: questJournal.completed
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1156660932608
+    m_Key: questJournal.failed
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 3971532221801562112
+  references:
+    version: 2
+    RefIds:
+    - rid: 3971532221801562112
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1774391200275

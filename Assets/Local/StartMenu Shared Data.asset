@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: StartMenu Shared Data
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
+  m_TableCollectionName: StartMenu
+  m_TableCollectionNameGuidString: 46cbda229c5b51941bacd148e0324d68
+  m_Entries:
+  - m_Id: 101533429760
+    m_Key: startMenu.start
+    m_Metadata:
+      m_Items: []
+  - m_Id: 205275344896
+    m_Key: startMenu.exit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 395428311040
+    m_Key: startMenu.testStart
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 8948283556936548629
+  references:
+    version: 2
+    RefIds:
+    - rid: 8948283556936548629
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1771867974600

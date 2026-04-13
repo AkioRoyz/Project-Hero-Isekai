@@ -1,0 +1,91 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Items_en
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 94ae6c3021d907241a36c7f3ee57da88, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 7186755584
+    m_Localized: Health potion
+    m_Metadata:
+      m_Items: []
+  - m_Id: 181439115264
+    m_Localized: Health potion restore 20% of max health.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1575973892096
+    m_Localized: Mana potion
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1621054271488
+    m_Localized: Mana potion restore 10% of max mana.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1723714056192
+    m_Localized: Teleport stone
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1876911009792
+    m_Localized: Stone for use teleport to the town.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1933311815680
+    m_Localized: Bandit note
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2018514907136
+    m_Localized: Hey! We are the Bandits!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2081010036736
+    m_Localized: Iron ring
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2171355344896
+    m_Localized: Strength +2 / Mana +1 / Defence +1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15904999813120
+    m_Localized: Agility potion
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15982351167488
+    m_Localized: Agility potion +
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16175255597056
+    m_Localized: Defence stone
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16372199141376
+    m_Localized: Defence stone desc.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 72588963164160
+    m_Localized: Hunter boots
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73121035792384
+    m_Localized: Defence +2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 270486267047936
+    m_Localized: Empty items
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

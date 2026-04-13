@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: TestTable_en
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: b7fa0654d63a80c4ba9b0d68ecd122a6, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 8990306304
+    m_Localized: Hello!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14067517173760
+    m_Localized: How can i help you?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14426646065152
+    m_Localized: Est rabota?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15503432953856
+    m_Localized: Im working...
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16036428328960
+    m_Localized: I have to deal with wolves
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16718652846080
+    m_Localized: How do you do?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17253468549120
+    m_Localized: Kill wolves.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17627025846272
+    m_Localized: Came back when u end.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17839328931840
+    m_Localized: Thanks!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18435087872000
+    m_Localized: U have already done! Thanks!
+    m_Metadata:
+      m_Items: []
+  - m_Id: 307382988910592
+    m_Localized: Talk about this place
+    m_Metadata:
+      m_Items: []
+  - m_Id: 308044623589376
+    m_Localized: This is a good place.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 945789674188800
+    m_Localized: Alpha wolf
+    m_Metadata:
+      m_Items: []
+  - m_Id: 947826763755520
+    m_Localized: I kill alpha
+    m_Metadata:
+      m_Items: []
+  - m_Id: 948833296052224
+    m_Localized: Money
+    m_Metadata:
+      m_Items: []
+  - m_Id: 949169423380480
+    m_Localized: eh..
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

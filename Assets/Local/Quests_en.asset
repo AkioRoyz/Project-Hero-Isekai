@@ -1,0 +1,111 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Quests_en
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 2aeced72d880ce045bccaf9301e724c7, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 81790840832
+    m_Localized: Problem with wolves.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1219621629952
+    m_Localized: Have to talk with Elder.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1428724461568
+    m_Localized: The Elder have a problem. I have to talk with him.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3101651972096
+    m_Localized: First i have to talk with Elder.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3246007332864
+    m_Localized: Talk with Elder.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3518540623872
+    m_Localized: Talk with Elder.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3681891987456
+    m_Localized: After tal with Elder have to kill wolves.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3817380589568
+    m_Localized: Kill 1 wolf.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 3929561444352
+    m_Localized: Kill 3 wolves.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 55949886566400
+    m_Localized: Upgrade lvl 5
+    m_Metadata:
+      m_Items: []
+  - m_Id: 56214417125376
+    m_Localized: U have to take lvl 5.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 56361989517312
+    m_Localized: U have to take level five.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 56762507800576
+    m_Localized: Red place again
+    m_Metadata:
+      m_Items: []
+  - m_Id: 56898046734336
+    m_Localized: Red place again (task)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 57150338314240
+    m_Localized: Red place again (obj)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 58756874186752
+    m_Localized: Have item quest
+    m_Metadata:
+      m_Items: []
+  - m_Id: 58880417411072
+    m_Localized: U have an item
+    m_Metadata:
+      m_Items: []
+  - m_Id: 59000911376384
+    m_Localized: U have an item my friend
+    m_Metadata:
+      m_Items: []
+  - m_Id: 59414020960256
+    m_Localized: Red place again
+    m_Metadata:
+      m_Items: []
+  - m_Id: 59565728935936
+    m_Localized: Red place again (obj)
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1480014354526208
+    m_Localized: Quest beggin
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1480256076460032
+    m_Localized: Quest Completed
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

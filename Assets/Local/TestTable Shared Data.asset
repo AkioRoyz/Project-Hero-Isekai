@@ -1,0 +1,92 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: TestTable Shared Data
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
+  m_TableCollectionName: TestTable
+  m_TableCollectionNameGuidString: b7fa0654d63a80c4ba9b0d68ecd122a6
+  m_Entries:
+  - m_Id: 8990306304
+    m_Key: test.Elder_test_first_words
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14067517173760
+    m_Key: test.elder_quest_node0
+    m_Metadata:
+      m_Items: []
+  - m_Id: 14426646065152
+    m_Key: test.elder_quest_ch_1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15503432953856
+    m_Key: test.elder_quest_ch_2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16036428328960
+    m_Key: test.elder_quest_ch_3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16718652846080
+    m_Key: test.elder_quest_ch_4
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17253468549120
+    m_Key: test.elder_quest_node_1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17627025846272
+    m_Key: test.elder_quest_node_2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 17839328931840
+    m_Key: test.elder_quest_node_3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 18435087872000
+    m_Key: test.elder_quest_node_4
+    m_Metadata:
+      m_Items: []
+  - m_Id: 307382988910592
+    m_Key: test.elder_quest_node_5
+    m_Metadata:
+      m_Items: []
+  - m_Id: 308044623589376
+    m_Key: test.elder_quest_node_5_1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 945789674188800
+    m_Key: test.elder_quest_node_alpha
+    m_Metadata:
+      m_Items: []
+  - m_Id: 947826763755520
+    m_Key: test.elder_quest_node_alpha_kill
+    m_Metadata:
+      m_Items: []
+  - m_Id: 948833296052224
+    m_Key: test.elder_money
+    m_Metadata:
+      m_Items: []
+  - m_Id: 949169423380480
+    m_Key: test.elder_money_give
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 3971532151424548948
+  references:
+    version: 2
+    RefIds:
+    - rid: 3971532151424548948
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1774137482069

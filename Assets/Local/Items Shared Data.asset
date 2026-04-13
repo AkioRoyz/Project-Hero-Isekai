@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: Items Shared Data
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
+  m_TableCollectionName: Items
+  m_TableCollectionNameGuidString: 94ae6c3021d907241a36c7f3ee57da88
+  m_Entries:
+  - m_Id: 7186755584
+    m_Key: ItemKey.health_potion
+    m_Metadata:
+      m_Items: []
+  - m_Id: 181439115264
+    m_Key: ItemKey.health_potion_discription
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1575973892096
+    m_Key: ItemKey.mana_potion
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1621054271488
+    m_Key: ItemKey.mana_potion_discription
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1723714056192
+    m_Key: ItemKey.teleport_stone
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1876911009792
+    m_Key: ItemKey.teleport_stone_discription
+    m_Metadata:
+      m_Items: []
+  - m_Id: 1933311815680
+    m_Key: ItemKey.bandit_note
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2018514907136
+    m_Key: ItemKey.bandit_note_discription
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2081010036736
+    m_Key: ItemKey.iron_ring
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2171355344896
+    m_Key: ItemKey.iron_ring_discription
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15904999813120
+    m_Key: ItemKey.agility_potion
+    m_Metadata:
+      m_Items: []
+  - m_Id: 15982351167488
+    m_Key: ItemKey.agility_potion_description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16175255597056
+    m_Key: ItemKey.defence_stone
+    m_Metadata:
+      m_Items: []
+  - m_Id: 16372199141376
+    m_Key: ItemKey.defence_stone_description
+    m_Metadata:
+      m_Items: []
+  - m_Id: 72588963164160
+    m_Key: ItemKey.hunter_boots
+    m_Metadata:
+      m_Items: []
+  - m_Id: 73121035792384
+    m_Key: ItemKey.hunter_boots_desc
+    m_Metadata:
+      m_Items: []
+  - m_Id: 270486267047936
+    m_Key: ItemKey.empty
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 3971532057971785802
+  references:
+    version: 2
+    RefIds:
+    - rid: 3971532057971785802
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1773770942194

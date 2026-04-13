@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Localization-Assets-Shared
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: Localization-Assets-Shared
+  m_GUID: db1eeaa667c31e642b94b6f3eb569e96
+  m_SerializeEntries:
+  - m_GUID: 1754ed6d60b3a2743bc25020da598acb
+    m_Address: Assets/Local/LoadZone Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2aeced72d880ce045bccaf9301e724c7
+    m_Address: Assets/Local/QuestsSide Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 46cbda229c5b51941bacd148e0324d68
+    m_Address: Assets/Local/StartMenu Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 789b5b6146da7c24a833495cc5368bac
+    m_Address: Assets/Local/QuestJournal Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c4771ffc4efe29418a755a75c03a73d
+    m_Address: Assets/Local/LoadingTextTest Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 94ae6c3021d907241a36c7f3ee57da88
+    m_Address: Assets/Local/Items Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9578439943a85384c85d4f92c0157d2a
+    m_Address: Assets/Local/UI_text Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9903a7787fc9acc4f8a1db509dabec95
+    m_Address: Assets/Local/UI_InventorySystem Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b7fa0654d63a80c4ba9b0d68ecd122a6
+    m_Address: Assets/Local/TestTable Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ca28e4ac4ef5a4445876d732675da9d8
+    m_Address: Assets/Local/NPC_names Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 1
+  m_Settings: {fileID: 11400000, guid: 995089ccf0d612c4c90c5a28e7415ca4, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: b3b111d6a813cf0408a4a1b8afac9ea6, type: 2}
+    - {fileID: 11400000, guid: afff015128c228d4a8097300c9f74218, type: 2}

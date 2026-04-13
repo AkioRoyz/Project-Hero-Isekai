@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb00193ea6da65548aa9e8d0cdbe32a4, type: 3}
+  m_Name: Dialogue_LoadZone
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueData
+  dialogueId: loadzone
+  repeatable: 1
+  conditions: []
+  nodes:
+  - inspectorNodeTitle: LoadZone
+    nodeType: 0
+    isStartNode: 1
+    speakerMode: 1
+    customSpeakerName:
+      m_TableReference:
+        m_TableCollectionName: GUID:1754ed6d60b3a2743bc25020da598acb
+      m_TableEntryReference:
+        m_KeyId: 503124586496
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    speakerPortrait: {fileID: 0}
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: GUID:1754ed6d60b3a2743bc25020da598acb
+      m_TableEntryReference:
+        m_KeyId: 6145699840
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    nextNodeIndex: 1
+    choices: []
+    conditions: []
+    onEnterActions: []
+  - inspectorNodeTitle: Line 01
+    nodeType: 0
+    isStartNode: 0
+    speakerMode: 1
+    customSpeakerName:
+      m_TableReference:
+        m_TableCollectionName: GUID:1754ed6d60b3a2743bc25020da598acb
+      m_TableEntryReference:
+        m_KeyId: 503124586496
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    speakerPortrait: {fileID: 0}
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: GUID:1754ed6d60b3a2743bc25020da598acb
+      m_TableEntryReference:
+        m_KeyId: 147665711104
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    nextNodeIndex: -1
+    choices: []
+    conditions: []
+    onEnterActions: []
+  references:
+    version: 2
+    RefIds: []
