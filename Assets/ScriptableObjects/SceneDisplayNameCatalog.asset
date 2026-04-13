@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 179b4074c4d5e334b9b3983ddd3412aa, type: 3}
+  m_Name: SceneDisplayNameCatalog
+  m_EditorClassIdentifier: Assembly-CSharp::SceneDisplayNameCatalog
+  entries:
+  - sceneName: LoadZone
+    displayName:
+      m_TableReference:
+        m_TableCollectionName: GUID:0df49c33daa199d40a174f2d9a25133a
+      m_TableEntryReference:
+        m_KeyId: 5105512448
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+  - sceneName: SampleScene
+    displayName:
+      m_TableReference:
+        m_TableCollectionName: GUID:0df49c33daa199d40a174f2d9a25133a
+      m_TableEntryReference:
+        m_KeyId: 246017945600
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+  - sceneName: SampleTeleport
+    displayName:
+      m_TableReference:
+        m_TableCollectionName: GUID:0df49c33daa199d40a174f2d9a25133a
+      m_TableEntryReference:
+        m_KeyId: 414234701824
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+  references:
+    version: 2
+    RefIds: []

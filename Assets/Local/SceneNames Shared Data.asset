@@ -10,43 +10,31 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
-  m_Name: LoadZone Shared Data
+  m_Name: SceneNames Shared Data
   m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
-  m_TableCollectionName: LoadZone
-  m_TableCollectionNameGuidString: 1754ed6d60b3a2743bc25020da598acb
+  m_TableCollectionName: SceneNames
+  m_TableCollectionNameGuidString: 0df49c33daa199d40a174f2d9a25133a
   m_Entries:
-  - m_Id: 6145699840
-    m_Key: loadzone.hello
+  - m_Id: 5105512448
+    m_Key: sceneName.LoadZone
     m_Metadata:
       m_Items: []
-  - m_Id: 147665711104
-    m_Key: loadzone.load
+  - m_Id: 246017945600
+    m_Key: sceneName.SampleScene
     m_Metadata:
       m_Items: []
-  - m_Id: 503124586496
-    m_Key: loadzone.name
-    m_Metadata:
-      m_Items: []
-  - m_Id: 53999509172224
-    m_Key: save_slot_empty
-    m_Metadata:
-      m_Items: []
-  - m_Id: 54122091900928
-    m_Key: save_slot_filled
-    m_Metadata:
-      m_Items: []
-  - m_Id: 54253512028160
-    m_Key: quit_game_message
+  - m_Id: 414234701824
+    m_Key: sceneName.SampleTeleport
     m_Metadata:
       m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
-    rid: 846794679526883328
+    rid: 846794681058066506
   references:
     version: 2
     RefIds:
-    - rid: 846794679526883328
+    - rid: 846794681058066506
       type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
       data:
-        m_CustomEpoch: 1776066617588
+        m_CustomEpoch: 1776078537332

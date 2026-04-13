@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: Localization-Assets-Shared
   m_GUID: db1eeaa667c31e642b94b6f3eb569e96
   m_SerializeEntries:
+  - m_GUID: 0df49c33daa199d40a174f2d9a25133a
+    m_Address: Assets/Local/SceneNames Shared Data.asset
+    m_ReadOnly: 1
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1754ed6d60b3a2743bc25020da598acb
     m_Address: Assets/Local/LoadZone Shared Data.asset
     m_ReadOnly: 1

@@ -1177,6 +1177,116 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""LoadZoneMenu"",
+            ""id"": ""a7c34467-e28f-4ad6-bca0-021bf50bde58"",
+            ""actions"": [
+                {
+                    ""name"": ""Move Up Action"",
+                    ""type"": ""Button"",
+                    ""id"": ""4990fd99-3f58-48d1-a204-6b9416c4a84f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Move Down Action"",
+                    ""type"": ""Button"",
+                    ""id"": ""89303cb5-8067-473f-afed-ff3e30c98f26"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Submit Action"",
+                    ""type"": ""Button"",
+                    ""id"": ""38de5ce6-7375-473b-b696-8b92f2c3927a"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Back Action"",
+                    ""type"": ""Button"",
+                    ""id"": ""72f3c2f3-6eba-4186-93c6-a168ffe53419"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""9afe8cc2-3556-4a59-a989-e823f19e3150"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyboardMouse"",
+                    ""action"": ""Move Up Action"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""976f0d8b-7868-4acc-8c73-0c17b8ca98f3"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyboardMouse"",
+                    ""action"": ""Move Up Action"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4cda53d3-6fb0-41bf-94c2-f06660339acd"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyboardMouse"",
+                    ""action"": ""Move Down Action"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""50d06014-6f2f-473b-9626-7d94b6cb71ac"",
+                    ""path"": ""<Keyboard>/downArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyboardMouse"",
+                    ""action"": ""Move Down Action"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""10a7063b-9238-408a-b404-3904fac5b9f1"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyboardMouse"",
+                    ""action"": ""Submit Action"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5149cc01-b817-4e45-858c-1e3695126101"",
+                    ""path"": ""<Keyboard>/backspace"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KeyboardMouse"",
+                    ""action"": ""Back Action"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -1288,6 +1398,12 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         m_PauseMenu_DownSelect = m_PauseMenu.FindAction("DownSelect", throwIfNotFound: true);
         m_PauseMenu_SelectChoise = m_PauseMenu.FindAction("SelectChoise", throwIfNotFound: true);
         m_PauseMenu_TogglePause = m_PauseMenu.FindAction("TogglePause", throwIfNotFound: true);
+        // LoadZoneMenu
+        m_LoadZoneMenu = asset.FindActionMap("LoadZoneMenu", throwIfNotFound: true);
+        m_LoadZoneMenu_MoveUpAction = m_LoadZoneMenu.FindAction("Move Up Action", throwIfNotFound: true);
+        m_LoadZoneMenu_MoveDownAction = m_LoadZoneMenu.FindAction("Move Down Action", throwIfNotFound: true);
+        m_LoadZoneMenu_SubmitAction = m_LoadZoneMenu.FindAction("Submit Action", throwIfNotFound: true);
+        m_LoadZoneMenu_BackAction = m_LoadZoneMenu.FindAction("Back Action", throwIfNotFound: true);
     }
 
     ~@InputSystem_Actions()
@@ -1297,6 +1413,7 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         UnityEngine.Debug.Assert(!m_Menu.enabled, "This will cause a leak and performance issues, InputSystem_Actions.Menu.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_QuestJournal.enabled, "This will cause a leak and performance issues, InputSystem_Actions.QuestJournal.Disable() has not been called.");
         UnityEngine.Debug.Assert(!m_PauseMenu.enabled, "This will cause a leak and performance issues, InputSystem_Actions.PauseMenu.Disable() has not been called.");
+        UnityEngine.Debug.Assert(!m_LoadZoneMenu.enabled, "This will cause a leak and performance issues, InputSystem_Actions.LoadZoneMenu.Disable() has not been called.");
     }
 
     /// <summary>
@@ -2189,6 +2306,135 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
     /// Provides a new <see cref="PauseMenuActions" /> instance referencing this action map.
     /// </summary>
     public PauseMenuActions @PauseMenu => new PauseMenuActions(this);
+
+    // LoadZoneMenu
+    private readonly InputActionMap m_LoadZoneMenu;
+    private List<ILoadZoneMenuActions> m_LoadZoneMenuActionsCallbackInterfaces = new List<ILoadZoneMenuActions>();
+    private readonly InputAction m_LoadZoneMenu_MoveUpAction;
+    private readonly InputAction m_LoadZoneMenu_MoveDownAction;
+    private readonly InputAction m_LoadZoneMenu_SubmitAction;
+    private readonly InputAction m_LoadZoneMenu_BackAction;
+    /// <summary>
+    /// Provides access to input actions defined in input action map "LoadZoneMenu".
+    /// </summary>
+    public struct LoadZoneMenuActions
+    {
+        private @InputSystem_Actions m_Wrapper;
+
+        /// <summary>
+        /// Construct a new instance of the input action map wrapper class.
+        /// </summary>
+        public LoadZoneMenuActions(@InputSystem_Actions wrapper) { m_Wrapper = wrapper; }
+        /// <summary>
+        /// Provides access to the underlying input action "LoadZoneMenu/MoveUpAction".
+        /// </summary>
+        public InputAction @MoveUpAction => m_Wrapper.m_LoadZoneMenu_MoveUpAction;
+        /// <summary>
+        /// Provides access to the underlying input action "LoadZoneMenu/MoveDownAction".
+        /// </summary>
+        public InputAction @MoveDownAction => m_Wrapper.m_LoadZoneMenu_MoveDownAction;
+        /// <summary>
+        /// Provides access to the underlying input action "LoadZoneMenu/SubmitAction".
+        /// </summary>
+        public InputAction @SubmitAction => m_Wrapper.m_LoadZoneMenu_SubmitAction;
+        /// <summary>
+        /// Provides access to the underlying input action "LoadZoneMenu/BackAction".
+        /// </summary>
+        public InputAction @BackAction => m_Wrapper.m_LoadZoneMenu_BackAction;
+        /// <summary>
+        /// Provides access to the underlying input action map instance.
+        /// </summary>
+        public InputActionMap Get() { return m_Wrapper.m_LoadZoneMenu; }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Enable()" />
+        public void Enable() { Get().Enable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.Disable()" />
+        public void Disable() { Get().Disable(); }
+        /// <inheritdoc cref="UnityEngine.InputSystem.InputActionMap.enabled" />
+        public bool enabled => Get().enabled;
+        /// <summary>
+        /// Implicitly converts an <see ref="LoadZoneMenuActions" /> to an <see ref="InputActionMap" /> instance.
+        /// </summary>
+        public static implicit operator InputActionMap(LoadZoneMenuActions set) { return set.Get(); }
+        /// <summary>
+        /// Adds <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <param name="instance">Callback instance.</param>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c> or <paramref name="instance"/> have already been added this method does nothing.
+        /// </remarks>
+        /// <seealso cref="LoadZoneMenuActions" />
+        public void AddCallbacks(ILoadZoneMenuActions instance)
+        {
+            if (instance == null || m_Wrapper.m_LoadZoneMenuActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_LoadZoneMenuActionsCallbackInterfaces.Add(instance);
+            @MoveUpAction.started += instance.OnMoveUpAction;
+            @MoveUpAction.performed += instance.OnMoveUpAction;
+            @MoveUpAction.canceled += instance.OnMoveUpAction;
+            @MoveDownAction.started += instance.OnMoveDownAction;
+            @MoveDownAction.performed += instance.OnMoveDownAction;
+            @MoveDownAction.canceled += instance.OnMoveDownAction;
+            @SubmitAction.started += instance.OnSubmitAction;
+            @SubmitAction.performed += instance.OnSubmitAction;
+            @SubmitAction.canceled += instance.OnSubmitAction;
+            @BackAction.started += instance.OnBackAction;
+            @BackAction.performed += instance.OnBackAction;
+            @BackAction.canceled += instance.OnBackAction;
+        }
+
+        /// <summary>
+        /// Removes <see cref="InputAction.started"/>, <see cref="InputAction.performed"/> and <see cref="InputAction.canceled"/> callbacks provided via <param cref="instance" /> on all input actions contained in this map.
+        /// </summary>
+        /// <remarks>
+        /// Calling this method when <paramref name="instance" /> have not previously been registered has no side-effects.
+        /// </remarks>
+        /// <seealso cref="LoadZoneMenuActions" />
+        private void UnregisterCallbacks(ILoadZoneMenuActions instance)
+        {
+            @MoveUpAction.started -= instance.OnMoveUpAction;
+            @MoveUpAction.performed -= instance.OnMoveUpAction;
+            @MoveUpAction.canceled -= instance.OnMoveUpAction;
+            @MoveDownAction.started -= instance.OnMoveDownAction;
+            @MoveDownAction.performed -= instance.OnMoveDownAction;
+            @MoveDownAction.canceled -= instance.OnMoveDownAction;
+            @SubmitAction.started -= instance.OnSubmitAction;
+            @SubmitAction.performed -= instance.OnSubmitAction;
+            @SubmitAction.canceled -= instance.OnSubmitAction;
+            @BackAction.started -= instance.OnBackAction;
+            @BackAction.performed -= instance.OnBackAction;
+            @BackAction.canceled -= instance.OnBackAction;
+        }
+
+        /// <summary>
+        /// Unregisters <param cref="instance" /> and unregisters all input action callbacks via <see cref="LoadZoneMenuActions.UnregisterCallbacks(ILoadZoneMenuActions)" />.
+        /// </summary>
+        /// <seealso cref="LoadZoneMenuActions.UnregisterCallbacks(ILoadZoneMenuActions)" />
+        public void RemoveCallbacks(ILoadZoneMenuActions instance)
+        {
+            if (m_Wrapper.m_LoadZoneMenuActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        /// <summary>
+        /// Replaces all existing callback instances and previously registered input action callbacks associated with them with callbacks provided via <param cref="instance" />.
+        /// </summary>
+        /// <remarks>
+        /// If <paramref name="instance" /> is <c>null</c>, calling this method will only unregister all existing callbacks but not register any new callbacks.
+        /// </remarks>
+        /// <seealso cref="LoadZoneMenuActions.AddCallbacks(ILoadZoneMenuActions)" />
+        /// <seealso cref="LoadZoneMenuActions.RemoveCallbacks(ILoadZoneMenuActions)" />
+        /// <seealso cref="LoadZoneMenuActions.UnregisterCallbacks(ILoadZoneMenuActions)" />
+        public void SetCallbacks(ILoadZoneMenuActions instance)
+        {
+            foreach (var item in m_Wrapper.m_LoadZoneMenuActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_LoadZoneMenuActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    /// <summary>
+    /// Provides a new <see cref="LoadZoneMenuActions" /> instance referencing this action map.
+    /// </summary>
+    public LoadZoneMenuActions @LoadZoneMenu => new LoadZoneMenuActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     /// <summary>
     /// Provides access to the input control scheme.
@@ -2545,5 +2791,41 @@ public partial class @InputSystem_Actions: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnTogglePause(InputAction.CallbackContext context);
+    }
+    /// <summary>
+    /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "LoadZoneMenu" which allows adding and removing callbacks.
+    /// </summary>
+    /// <seealso cref="LoadZoneMenuActions.AddCallbacks(ILoadZoneMenuActions)" />
+    /// <seealso cref="LoadZoneMenuActions.RemoveCallbacks(ILoadZoneMenuActions)" />
+    public interface ILoadZoneMenuActions
+    {
+        /// <summary>
+        /// Method invoked when associated input action "Move Up Action" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMoveUpAction(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Move Down Action" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMoveDownAction(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Submit Action" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSubmitAction(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Back Action" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnBackAction(InputAction.CallbackContext context);
     }
 }

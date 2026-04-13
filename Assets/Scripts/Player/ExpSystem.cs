@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class ExpSystem : MonoBehaviour
 {
+    public static ExpSystem Instance { get; private set; }
+
     [SerializeField] private int xpToNextLvl = 100;
     [SerializeField] private int currentXP = 0;
     [SerializeField] private int maxLvl = 50;
@@ -20,9 +22,21 @@ public class ExpSystem : MonoBehaviour
     public int MaxLvl => maxLvl;
     public int CurrentXP => currentXP;
 
+    private void Awake()
+    {
+        Instance = this;
+        ClampState();
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
+    }
+
     private void Start()
     {
-        OnXpAdd?.Invoke(currentXP);
+        BroadcastProgress();
     }
 
     private void OnEnable()
@@ -37,6 +51,9 @@ public class ExpSystem : MonoBehaviour
 
     private void AddRewardXP(RewardData reward)
     {
+        if (reward.Exp <= 0)
+            return;
+
         AddXPInternal(reward.Exp);
     }
 
@@ -51,22 +68,34 @@ public class ExpSystem : MonoBehaviour
         AddXPInternal(debugAddXpAmount);
     }
 
+    public void SetProgressFromSave(int level, int xp, int xpNeededForNextLevel)
+    {
+        maxLvl = Mathf.Max(1, maxLvl);
+        currentLvl = Mathf.Clamp(level, 1, maxLvl);
+        xpToNextLvl = Mathf.Max(1, xpNeededForNextLevel);
+        currentXP = Mathf.Clamp(xp, 0, xpToNextLvl);
+
+        if (currentLvl >= maxLvl)
+            currentXP = Mathf.Clamp(currentXP, 0, xpToNextLvl);
+
+        BroadcastProgress();
+    }
+
     private void AddXPInternal(int amount)
     {
-        if (amount <= 0)
-            return;
+        ClampState();
 
-        if (currentLvl == maxLvl)
+        if (amount <= 0 || currentLvl >= maxLvl)
             return;
 
         currentXP += amount;
 
-        while (currentXP >= xpToNextLvl)
+        while (currentLvl < maxLvl && currentXP >= xpToNextLvl)
         {
             currentXP -= xpToNextLvl;
-            LvlUp();
+            LevelUp();
 
-            if (currentLvl == maxLvl)
+            if (currentLvl >= maxLvl)
             {
                 currentXP = xpToNextLvl;
                 break;
@@ -76,18 +105,31 @@ public class ExpSystem : MonoBehaviour
         OnXpAdd?.Invoke(currentXP);
     }
 
-    private void LvlUp()
+    private void LevelUp()
     {
-        if (currentLvl == maxLvl)
+        if (currentLvl >= maxLvl)
             return;
 
         currentLvl++;
 
-        if (currentLvl < maxLvl)
-        {
-            xpToNextLvl = Mathf.RoundToInt(xpToNextLvl * (1 + percentUp / 100f));
-        }
+        int nextDelta = Mathf.Max(1, Mathf.CeilToInt(xpToNextLvl * (percentUp / 100f)));
+        xpToNextLvl += nextDelta;
 
         OnLevelChange?.Invoke(currentLvl);
+    }
+
+    private void BroadcastProgress()
+    {
+        ClampState();
+        OnLevelChange?.Invoke(currentLvl);
+        OnXpAdd?.Invoke(currentXP);
+    }
+
+    private void ClampState()
+    {
+        maxLvl = Mathf.Max(1, maxLvl);
+        currentLvl = Mathf.Clamp(currentLvl, 1, maxLvl);
+        xpToNextLvl = Mathf.Max(1, xpToNextLvl);
+        currentXP = Mathf.Clamp(currentXP, 0, xpToNextLvl);
     }
 }
