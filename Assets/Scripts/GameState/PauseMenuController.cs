@@ -256,7 +256,7 @@ public class PauseMenuController : MonoBehaviour
         if (selectedRootButtonIndex < 0)
             selectedRootButtonIndex += buttons.Count;
 
-        buttons[selectedRootButtonIndex].Select();
+        ApplyRootButtonSelection();
     }
 
     private void InvokeSelectedRootButton()
@@ -283,6 +283,32 @@ public class PauseMenuController : MonoBehaviour
         }
 
         return buttons;
+    }
+
+    private int GetInitialRootButtonIndex()
+    {
+        List<Button> buttons = GetAvailableRootButtons();
+        if (buttons.Count == 0)
+            return -1;
+
+        if (resumeButton != null)
+        {
+            int resumeIndex = buttons.IndexOf(resumeButton);
+            if (resumeIndex >= 0)
+                return resumeIndex;
+        }
+
+        return 0;
+    }
+
+    private void ApplyRootButtonSelection()
+    {
+        List<Button> buttons = GetAvailableRootButtons();
+        if (buttons.Count == 0)
+            return;
+
+        selectedRootButtonIndex = Mathf.Clamp(selectedRootButtonIndex, 0, buttons.Count - 1);
+        buttons[selectedRootButtonIndex].Select();
     }
 
     private void HandleGameStateChanged(GameState newState)
@@ -322,18 +348,8 @@ public class PauseMenuController : MonoBehaviour
         if (loadRoot != null)
             loadRoot.SetActive(false);
 
-        selectedRootButtonIndex = 0;
-
-        if (resumeButton != null)
-        {
-            resumeButton.Select();
-        }
-        else
-        {
-            List<Button> buttons = GetAvailableRootButtons();
-            if (buttons.Count > 0)
-                buttons[0].Select();
-        }
+        selectedRootButtonIndex = GetInitialRootButtonIndex();
+        ApplyRootButtonSelection();
     }
 
     public void OpenSaveRoot()

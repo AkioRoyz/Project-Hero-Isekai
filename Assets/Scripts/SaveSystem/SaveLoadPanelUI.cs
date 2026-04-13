@@ -203,6 +203,8 @@ public class SaveLoadPanelUI : MonoBehaviour
         if (!saveManager.HasSave(slotIndex))
             return;
 
+        Hide();
+        BackRequested?.Invoke();
         saveManager.LoadFromSlot(slotIndex);
     }
 

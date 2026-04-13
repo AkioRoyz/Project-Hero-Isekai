@@ -7067,7 +7067,10 @@ MonoBehaviour:
   loadRoot: {fileID: 144576921}
   savePanel: {fileID: 2024143637}
   loadPanel: {fileID: 144576923}
-  rootButtons: []
+  rootButtons:
+  - {fileID: 1278386020}
+  - {fileID: 162544007}
+  - {fileID: 501264730}
   resumeButton: {fileID: 533314844}
   pauseGrayScaleVolume: {fileID: 101146253}
   pauseGrayScaleWeight: 1
@@ -36800,7 +36803,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2024143634
 RectTransform:
   m_ObjectHideFlags: 0
