@@ -24,8 +24,11 @@ public class SaveManager : MonoBehaviour
     [SerializeField] private int thumbnailWidth = 320;
     [SerializeField] private int thumbnailHeight = 180;
 
+    [Header("Loading")]
+    [SerializeField] private bool useSceneTransitionManagerForLoading = true;
+
     [Header("Slots")]
-    [SerializeField] private int slotCount = 3;
+    [SerializeField] private int slotCount = 5;
     [SerializeField] private bool verboseLogs;
 
     private const int CurrentSaveVersion = 1;
@@ -146,7 +149,21 @@ public class SaveManager : MonoBehaviour
 
         SceneManager.sceneLoaded -= HandleSceneLoaded;
         SceneManager.sceneLoaded += HandleSceneLoaded;
-        SceneManager.LoadScene(data.sceneName);
+
+        if (useSceneTransitionManagerForLoading && SceneTransitionManager.Instance != null)
+        {
+            if (verboseLogs)
+                Debug.Log("SaveManager: loading via SceneTransitionManager -> " + data.sceneName);
+
+            SceneTransitionManager.Instance.LoadScene(data.sceneName, null);
+        }
+        else
+        {
+            if (verboseLogs)
+                Debug.Log("SaveManager: loading directly via SceneManager -> " + data.sceneName);
+
+            SceneManager.LoadScene(data.sceneName);
+        }
 
         return true;
     }

@@ -1,8 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.UI;
 
 public class PauseMenuController : MonoBehaviour
 {
@@ -23,40 +20,27 @@ public class PauseMenuController : MonoBehaviour
     [Header("Pause Visuals")]
     [SerializeField] private GameObject pauseOverlayRoot;
     [SerializeField] private GameObject quitMessageRoot;
-
-    [Header("Input")]
-    [SerializeField] private PlayerInput playerInput;
-    [SerializeField] private InputSystemUIInputModule inputModule;
-    [SerializeField] private string gameplayActionMapName = "Player";
-    [SerializeField] private string pauseActionMapName = "PauseMenu";
-
-    [SerializeField] private InputActionReference openPauseAction;
-    [SerializeField] private InputActionReference closePauseAction;
-    [SerializeField] private InputActionReference upSelectAction;
-    [SerializeField] private InputActionReference downSelectAction;
-    [SerializeField] private InputActionReference selectChoiceAction;
-    [SerializeField] private InputActionReference cancelAction;
+    [SerializeField] private PauseMenuBlackAndWhiteEffect blackAndWhiteEffect;
 
     [Header("Behaviour")]
     [SerializeField] private bool manageTimeScale = true;
-    [SerializeField] private bool manageActionMaps = true;
+    [SerializeField] private bool switchGameInputMode = true;
     [SerializeField] private bool openMenuOnStart = false;
 
     [Header("Delays")]
     [SerializeField] private float saveDelayAfterClose = 0.05f;
-    [SerializeField] private float loadDelayBeforeSaveLoadCall = 0.35f;
+    [SerializeField] private float loadDelayBeforeSaveLoadCall = 0.05f;
     [SerializeField] private float quitDelay = 0.6f;
 
-    [Header("Project Hooks")]
-    [SerializeField] private UnityEvent onPauseOpened;
-    [SerializeField] private UnityEvent onPauseClosed;
-    [SerializeField] private UnityEvent onBeforeLoadTransition;
-    [SerializeField] private UnityEvent onQuitStarted;
+    [Header("Debug")]
+    [SerializeField] private bool verboseLogs = false;
 
     private bool isOpen;
     private bool isBusy;
-    private ActiveRoot activeRoot = ActiveRoot.Main;
+    private bool isSubscribed;
     private int mainSelectionIndex;
+    private ActiveRoot activeRoot = ActiveRoot.Main;
+    private Coroutine waitForGameInputCoroutine;
 
     public bool IsOpen => isOpen;
 
@@ -78,12 +62,13 @@ public class PauseMenuController : MonoBehaviour
 
     private void OnEnable()
     {
-        SubscribeInput();
+        StartWaitingForGameInput();
     }
 
     private void OnDisable()
     {
-        UnsubscribeInput();
+        StopWaitingForGameInput();
+        UnsubscribeFromGameInput();
 
         if (manageTimeScale)
         {
@@ -94,6 +79,8 @@ public class PauseMenuController : MonoBehaviour
     private void OnDestroy()
     {
         UnbindRootEvents();
+        StopWaitingForGameInput();
+        UnsubscribeFromGameInput();
     }
 
     private void BindRootEvents()
@@ -126,67 +113,88 @@ public class PauseMenuController : MonoBehaviour
         }
     }
 
-    private void SubscribeInput()
+    private void StartWaitingForGameInput()
     {
-        SubscribeAction(openPauseAction, HandleOpenPausePerformed);
-        SubscribeAction(closePauseAction, HandleClosePausePerformed);
-        SubscribeAction(upSelectAction, HandleUpPerformed);
-        SubscribeAction(downSelectAction, HandleDownPerformed);
-        SubscribeAction(selectChoiceAction, HandleSubmitPerformed);
-        SubscribeAction(cancelAction, HandleCancelPerformed);
+        StopWaitingForGameInput();
+        waitForGameInputCoroutine = StartCoroutine(WaitForGameInputAndSubscribeRoutine());
     }
 
-    private void UnsubscribeInput()
+    private void StopWaitingForGameInput()
     {
-        UnsubscribeAction(openPauseAction, HandleOpenPausePerformed);
-        UnsubscribeAction(closePauseAction, HandleClosePausePerformed);
-        UnsubscribeAction(upSelectAction, HandleUpPerformed);
-        UnsubscribeAction(downSelectAction, HandleDownPerformed);
-        UnsubscribeAction(selectChoiceAction, HandleSubmitPerformed);
-        UnsubscribeAction(cancelAction, HandleCancelPerformed);
+        if (waitForGameInputCoroutine != null)
+        {
+            StopCoroutine(waitForGameInputCoroutine);
+            waitForGameInputCoroutine = null;
+        }
     }
 
-    private void SubscribeAction(InputActionReference actionReference, System.Action<InputAction.CallbackContext> callback)
+    private IEnumerator WaitForGameInputAndSubscribeRoutine()
     {
-        if (actionReference == null || actionReference.action == null)
+        while (GameInput.Instance == null)
+        {
+            yield return null;
+        }
+
+        SubscribeToGameInput();
+        waitForGameInputCoroutine = null;
+    }
+
+    private void SubscribeToGameInput()
+    {
+        if (isSubscribed || GameInput.Instance == null)
         {
             return;
         }
 
-        actionReference.action.performed += callback;
+        GameInput.Instance.OnPauseToggle += HandlePauseToggleInput;
+        GameInput.Instance.OnPauseMenuUp += HandlePauseMenuUpInput;
+        GameInput.Instance.OnPauseMenuDown += HandlePauseMenuDownInput;
+        GameInput.Instance.OnPauseMenuSelect += HandlePauseMenuSelectInput;
+
+        isSubscribed = true;
+
+        if (verboseLogs)
+        {
+            Debug.Log("[PauseMenuController] Connected to GameInput.");
+        }
     }
 
-    private void UnsubscribeAction(InputActionReference actionReference, System.Action<InputAction.CallbackContext> callback)
+    private void UnsubscribeFromGameInput()
     {
-        if (actionReference == null || actionReference.action == null)
+        if (!isSubscribed)
         {
             return;
         }
 
-        actionReference.action.performed -= callback;
+        if (GameInput.Instance != null)
+        {
+            GameInput.Instance.OnPauseToggle -= HandlePauseToggleInput;
+            GameInput.Instance.OnPauseMenuUp -= HandlePauseMenuUpInput;
+            GameInput.Instance.OnPauseMenuDown -= HandlePauseMenuDownInput;
+            GameInput.Instance.OnPauseMenuSelect -= HandlePauseMenuSelectInput;
+        }
+
+        isSubscribed = false;
     }
 
-    private void HandleOpenPausePerformed(InputAction.CallbackContext context)
+    private void HandlePauseToggleInput()
     {
-        if (isBusy || isOpen)
+        if (isBusy)
         {
             return;
         }
 
-        OpenPauseMenu();
-    }
-
-    private void HandleClosePausePerformed(InputAction.CallbackContext context)
-    {
-        if (isBusy || !isOpen)
+        if (isOpen)
         {
-            return;
+            ClosePauseMenu();
         }
-
-        ClosePauseMenu();
+        else
+        {
+            OpenPauseMenu();
+        }
     }
 
-    private void HandleUpPerformed(InputAction.CallbackContext context)
+    private void HandlePauseMenuUpInput()
     {
         if (isBusy || !isOpen)
         {
@@ -196,7 +204,7 @@ public class PauseMenuController : MonoBehaviour
         MoveSelection(-1);
     }
 
-    private void HandleDownPerformed(InputAction.CallbackContext context)
+    private void HandlePauseMenuDownInput()
     {
         if (isBusy || !isOpen)
         {
@@ -206,7 +214,7 @@ public class PauseMenuController : MonoBehaviour
         MoveSelection(+1);
     }
 
-    private void HandleSubmitPerformed(InputAction.CallbackContext context)
+    private void HandlePauseMenuSelectInput()
     {
         if (isBusy || !isOpen)
         {
@@ -216,25 +224,9 @@ public class PauseMenuController : MonoBehaviour
         SubmitCurrentSelection();
     }
 
-    private void HandleCancelPerformed(InputAction.CallbackContext context)
-    {
-        if (isBusy || !isOpen)
-        {
-            return;
-        }
-
-        if (activeRoot == ActiveRoot.Main)
-        {
-            ClosePauseMenu();
-            return;
-        }
-
-        ShowMainRoot();
-    }
-
     public void OpenPauseMenu()
     {
-        if (isOpen)
+        if (isOpen || GameInput.Instance == null)
         {
             return;
         }
@@ -262,13 +254,18 @@ public class PauseMenuController : MonoBehaviour
             Time.timeScale = 0f;
         }
 
-        if (manageActionMaps && playerInput != null && !string.IsNullOrWhiteSpace(pauseActionMapName))
+        if (switchGameInputMode)
         {
-            playerInput.SwitchCurrentActionMap(pauseActionMapName);
+            GameInput.Instance.SwitchToPauseMenuMode();
         }
 
+        blackAndWhiteEffect?.EnablePauseEffect();
         ShowMainRoot();
-        onPauseOpened?.Invoke();
+
+        if (verboseLogs)
+        {
+            Debug.Log("[PauseMenuController] Pause opened.");
+        }
     }
 
     public void ClosePauseMenu()
@@ -298,9 +295,11 @@ public class PauseMenuController : MonoBehaviour
             quitMessageRoot.SetActive(false);
         }
 
-        if (manageActionMaps && playerInput != null && !string.IsNullOrWhiteSpace(gameplayActionMapName))
+        blackAndWhiteEffect?.DisablePauseEffect();
+
+        if (switchGameInputMode && GameInput.Instance != null)
         {
-            playerInput.SwitchCurrentActionMap(gameplayActionMapName);
+            GameInput.Instance.SwitchToPlayerMode();
         }
 
         if (manageTimeScale)
@@ -308,7 +307,10 @@ public class PauseMenuController : MonoBehaviour
             Time.timeScale = 1f;
         }
 
-        onPauseClosed?.Invoke();
+        if (verboseLogs)
+        {
+            Debug.Log("[PauseMenuController] Pause closed.");
+        }
     }
 
     public void TogglePauseMenu()
@@ -342,11 +344,7 @@ public class PauseMenuController : MonoBehaviour
             mainRoot.SetActive(false);
         }
 
-        if (loadRootUI != null)
-        {
-            loadRootUI.HideRoot();
-        }
-
+        loadRootUI?.HideRoot();
         saveRootUI.ShowRoot();
     }
 
@@ -364,11 +362,7 @@ public class PauseMenuController : MonoBehaviour
             mainRoot.SetActive(false);
         }
 
-        if (saveRootUI != null)
-        {
-            saveRootUI.HideRoot();
-        }
-
+        saveRootUI?.HideRoot();
         loadRootUI.ShowRoot();
     }
 
@@ -381,15 +375,8 @@ public class PauseMenuController : MonoBehaviour
             mainRoot.SetActive(true);
         }
 
-        if (saveRootUI != null)
-        {
-            saveRootUI.HideRoot();
-        }
-
-        if (loadRootUI != null)
-        {
-            loadRootUI.HideRoot();
-        }
+        saveRootUI?.HideRoot();
+        loadRootUI?.HideRoot();
 
         RefreshMainMenuVisuals();
     }
@@ -401,15 +388,8 @@ public class PauseMenuController : MonoBehaviour
             mainRoot.SetActive(false);
         }
 
-        if (saveRootUI != null)
-        {
-            saveRootUI.HideRoot();
-        }
-
-        if (loadRootUI != null)
-        {
-            loadRootUI.HideRoot();
-        }
+        saveRootUI?.HideRoot();
+        loadRootUI?.HideRoot();
     }
 
     private void ForceClosedState()
@@ -434,6 +414,7 @@ public class PauseMenuController : MonoBehaviour
         }
 
         HideAllRoots();
+        blackAndWhiteEffect?.DisablePauseEffectImmediate();
 
         if (manageTimeScale)
         {
@@ -606,8 +587,6 @@ public class PauseMenuController : MonoBehaviour
 
         ClosePauseMenu();
 
-        onBeforeLoadTransition?.Invoke();
-
         if (loadDelayBeforeSaveLoadCall > 0f)
         {
             yield return new WaitForSecondsRealtime(loadDelayBeforeSaveLoadCall);
@@ -629,8 +608,6 @@ public class PauseMenuController : MonoBehaviour
         {
             quitMessageRoot.SetActive(true);
         }
-
-        onQuitStarted?.Invoke();
 
         if (quitDelay > 0f)
         {

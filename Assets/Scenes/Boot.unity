@@ -510,8 +510,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PauseMenuSlotViewUI
   selectedState: {fileID: 1786029400}
-  filledState: {fileID: 465250407}
-  emptyState: {fileID: 1260549092}
+  filledState: {fileID: 0}
+  emptyState: {fileID: 0}
   backState: {fileID: 0}
   titleText: {fileID: 288051738}
   sceneText: {fileID: 0}
@@ -810,7 +810,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &21707245
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6470,7 +6470,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneTeleport2D
   targetSceneName: LoadZone
-  targetEntryPointId: loadzone
+  targetEntryPointId: 
   playerTag: Player
   showLogs: 1
 --- !u!1 &237978220
@@ -8715,46 +8715,14 @@ MonoBehaviour:
   - {fileID: 1849828445}
   pauseOverlayRoot: {fileID: 1329821757}
   quitMessageRoot: {fileID: 864573151}
-  playerInput: {fileID: 0}
-  inputModule: {fileID: 0}
-  gameplayActionMapName: Player
-  pauseActionMapName: PauseMenu
-  openPauseAction: {fileID: 3479141836399386548, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-  closePauseAction: {fileID: 3791971779146857299, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-  upSelectAction: {fileID: 3068916682423822382, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-  downSelectAction: {fileID: -9152341482212510043, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-  selectChoiceAction: {fileID: -4270013011435861160, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-  cancelAction: {fileID: 0}
+  blackAndWhiteEffect: {fileID: 1098623602}
   manageTimeScale: 1
-  manageActionMaps: 1
+  switchGameInputMode: 1
   openMenuOnStart: 0
   saveDelayAfterClose: 0.05
   loadDelayBeforeSaveLoadCall: 0.35
   quitDelay: 0.6
-  onPauseOpened:
-    m_PersistentCalls:
-      m_Calls: []
-  onPauseClosed:
-    m_PersistentCalls:
-      m_Calls: []
-  onBeforeLoadTransition:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  onQuitStarted:
-    m_PersistentCalls:
-      m_Calls: []
+  verboseLogs: 1
 --- !u!4 &357094888
 Transform:
   m_ObjectHideFlags: 0
@@ -19551,7 +19519,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &864573152
 RectTransform:
   m_ObjectHideFlags: 0
@@ -20307,7 +20275,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &890959504
 RectTransform:
   m_ObjectHideFlags: 0
@@ -25185,6 +25153,56 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 525, y: 30}
   m_Pivot: {x: 0, y: 0.5}
+--- !u!1 &1098623600
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1098623601}
+  - component: {fileID: 1098623602}
+  m_Layer: 0
+  m_Name: PauseBWEffect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1098623601
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1098623600}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1209021692}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1098623602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1098623600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f3e79557e53f344dab09e4c25b77680, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PauseMenuBlackAndWhiteEffect
+  effectRoot: {fileID: 863587236}
+  targetVolume: {fileID: 101146253}
+  enabledWeight: 1
+  disabledWeight: 0
+  activateRootWhenEnabled: 1
+  deactivateRootWhenDisabled: 0
 --- !u!1 &1101812531
 GameObject:
   m_ObjectHideFlags: 0
@@ -27820,6 +27838,7 @@ Transform:
   - {fileID: 494530343}
   - {fileID: 1563059466}
   - {fileID: 357094888}
+  - {fileID: 1098623601}
   - {fileID: 672704100}
   - {fileID: 221535141}
   - {fileID: 1253149041}
@@ -28844,6 +28863,7 @@ MonoBehaviour:
   screenshotCamera: {fileID: 863587240}
   thumbnailWidth: 320
   thumbnailHeight: 180
+  useSceneTransitionManagerForLoading: 1
   slotCount: 5
   verboseLogs: 0
 --- !u!1 &1255349088
@@ -30486,7 +30506,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1329821758
 RectTransform:
   m_ObjectHideFlags: 0
@@ -30519,7 +30539,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.48235294}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -32284,7 +32304,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1404597683
 RectTransform:
   m_ObjectHideFlags: 0
@@ -32385,7 +32405,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PauseMenuSaveAdapter
   saveManager: {fileID: 1253149042}
-  fallbackSlotCount: 5
   managerSlotIndexOffset: 0
   sceneDisplayNames:
   - sceneName: LoadZone
@@ -45561,7 +45580,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2024143634
 RectTransform:
   m_ObjectHideFlags: 0

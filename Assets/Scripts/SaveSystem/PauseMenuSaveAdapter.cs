@@ -1,9 +1,7 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
-using System.Reflection;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class PauseMenuSaveAdapter : MonoBehaviour
 {
@@ -26,27 +24,49 @@ public class PauseMenuSaveAdapter : MonoBehaviour
     }
 
     [Header("Save System Reference")]
-    [SerializeField] private MonoBehaviour saveManager;
+    [SerializeField] private SaveManager saveManager;
 
     [Header("Slot Setup")]
-    [SerializeField] private int fallbackSlotCount = 5;
     [SerializeField] private int managerSlotIndexOffset = 0;
 
     [Header("Scene Display Names")]
     [SerializeField] private SceneDisplayNameEntry[] sceneDisplayNames;
 
     [Header("Debug")]
-    [SerializeField] private bool verboseLogs;
+    [SerializeField] private bool verboseLogs = false;
 
-    public MonoBehaviour SaveManager => saveManager;
+    private readonly Dictionary<int, Texture2D> cachedTextures = new Dictionary<int, Texture2D>();
+    private readonly Dictionary<int, Sprite> cachedSprites = new Dictionary<int, Sprite>();
+    private bool isSubscribedToSaveManager;
+
+    public SaveManager SaveManager => saveManager;
 
     public int SlotCount
     {
         get
         {
-            int count = ReadSlotCountFromManager();
-            return count > 0 ? count : fallbackSlotCount;
+            if (saveManager == null)
+            {
+                return 0;
+            }
+
+            return saveManager.SlotCount;
         }
+    }
+
+    private void OnEnable()
+    {
+        SubscribeToSaveManager();
+    }
+
+    private void OnDisable()
+    {
+        UnsubscribeFromSaveManager();
+    }
+
+    private void OnDestroy()
+    {
+        ClearThumbnailCache();
     }
 
     public bool TryGetSlotPresentation(int uiSlotIndex, out SlotPresentationData data)
@@ -60,23 +80,22 @@ public class PauseMenuSaveAdapter : MonoBehaviour
 
         int managerSlotIndex = ToManagerSlotIndex(uiSlotIndex);
 
-        object metadata = GetMetadata(managerSlotIndex);
-        Sprite thumbnail = GetThumbnail(managerSlotIndex, metadata);
+        if (managerSlotIndex < 0 || managerSlotIndex >= saveManager.SlotCount)
+        {
+            return false;
+        }
 
-        bool hasData = DetermineHasData(metadata, thumbnail);
-
-        string sceneName = ReadStringMember(metadata, "sceneName", "SceneName", "sceneId", "SceneId", "scene", "Scene");
-        string saveDateText = BuildDateText(metadata);
-        int playerLevel = ReadIntMember(metadata, "playerLevel", "PlayerLevel", "level", "Level");
+        SaveSlotMetadata metadata = saveManager.GetSlotMetadata(managerSlotIndex);
+        Sprite thumbnailSprite = GetOrCreateThumbnailSprite(managerSlotIndex);
 
         data = new SlotPresentationData
         {
-            HasData = hasData,
-            SceneName = sceneName,
-            DisplaySceneName = ResolveSceneDisplayName(sceneName),
-            SaveDateText = saveDateText,
-            PlayerLevel = playerLevel,
-            Thumbnail = thumbnail
+            HasData = metadata.exists,
+            SceneName = metadata.sceneName,
+            DisplaySceneName = ResolveSceneDisplayName(metadata.sceneName),
+            SaveDateText = FormatSaveDate(metadata.saveTimestampUtc),
+            PlayerLevel = metadata.playerLevel,
+            Thumbnail = thumbnailSprite
         };
 
         return true;
@@ -92,28 +111,24 @@ public class PauseMenuSaveAdapter : MonoBehaviour
 
         int managerSlotIndex = ToManagerSlotIndex(uiSlotIndex);
 
-        if (TryInvokeCandidateMethod(saveManager, new[]
-            {
-                "SaveToSlot",
-                "SaveGameToSlot",
-                "SaveSlot",
-                "WriteSave",
-                "CreateSaveForSlot"
-            }, managerSlotIndex))
+        if (verboseLogs)
         {
-            return;
+            Debug.Log($"[PauseMenuSaveAdapter] Saving to UI slot {uiSlotIndex}, manager slot {managerSlotIndex}.");
         }
 
-        if (TryInvokeCandidateMethod(saveManager, new[]
-            {
-                "Save",
-                "SaveGame"
-            }, managerSlotIndex))
-        {
-            return;
-        }
+        bool saveSucceeded = saveManager.SaveToSlot(managerSlotIndex);
 
-        Debug.LogError($"[PauseMenuSaveAdapter] Could not find save method on {saveManager.GetType().Name}.");
+        // Важно: меню перед сохранением уже закрыто, поэтому нельзя полагаться только на OnSlotChanged.
+        // Сбрасываем кэш превью сразу вручную, чтобы при следующем открытии загрузился новый PNG.
+        if (saveSucceeded)
+        {
+            InvalidateThumbnailCacheForSlot(managerSlotIndex);
+
+            if (verboseLogs)
+            {
+                Debug.Log($"[PauseMenuSaveAdapter] Thumbnail cache invalidated for slot {managerSlotIndex} after save.");
+            }
+        }
     }
 
     public void LoadFromSlot(int uiSlotIndex)
@@ -126,190 +141,17 @@ public class PauseMenuSaveAdapter : MonoBehaviour
 
         int managerSlotIndex = ToManagerSlotIndex(uiSlotIndex);
 
-        if (TryInvokeCandidateMethod(saveManager, new[]
-            {
-                "LoadFromSlot",
-                "LoadGameFromSlot",
-                "LoadSlot",
-                "ReadSave",
-                "LoadSaveFromSlot"
-            }, managerSlotIndex))
+        if (verboseLogs)
         {
-            return;
+            Debug.Log($"[PauseMenuSaveAdapter] Loading from UI slot {uiSlotIndex}, manager slot {managerSlotIndex}.");
         }
 
-        if (TryInvokeCandidateMethod(saveManager, new[]
-            {
-                "Load",
-                "LoadGame"
-            }, managerSlotIndex))
-        {
-            return;
-        }
-
-        Debug.LogError($"[PauseMenuSaveAdapter] Could not find load method on {saveManager.GetType().Name}.");
+        saveManager.LoadFromSlot(managerSlotIndex);
     }
 
     private int ToManagerSlotIndex(int uiSlotIndex)
     {
         return uiSlotIndex + managerSlotIndexOffset;
-    }
-
-    private int ReadSlotCountFromManager()
-    {
-        if (saveManager == null)
-        {
-            return 0;
-        }
-
-        object value = ReadMemberValue(saveManager,
-            "slotCount",
-            "SlotCount",
-            "saveSlotCount",
-            "SaveSlotCount");
-
-        if (value != null)
-        {
-            try
-            {
-                return Convert.ToInt32(value);
-            }
-            catch
-            {
-                // ignored
-            }
-        }
-
-        object methodResult = InvokeCandidateMethod(saveManager,
-            new[]
-            {
-                "GetSlotCount",
-                "GetSaveSlotCount"
-            });
-
-        if (methodResult != null)
-        {
-            try
-            {
-                return Convert.ToInt32(methodResult);
-            }
-            catch
-            {
-                // ignored
-            }
-        }
-
-        return 0;
-    }
-
-    private object GetMetadata(int managerSlotIndex)
-    {
-        if (saveManager == null)
-        {
-            return null;
-        }
-
-        object methodResult = InvokeCandidateMethod(saveManager,
-            new[]
-            {
-                "GetSlotMetadata",
-                "GetSaveSlotMetadata",
-                "GetSlotInfo",
-                "GetSaveInfo",
-                "GetSlotData",
-                "GetPreviewData",
-                "GetSavePreviewData"
-            },
-            managerSlotIndex);
-
-        if (methodResult != null)
-        {
-            return methodResult;
-        }
-
-        object collection = ReadMemberValue(saveManager,
-            "slotMetadata",
-            "slotMetadatas",
-            "saveSlots",
-            "slots",
-            "slotInfos",
-            "saveInfos");
-
-        if (collection is IList list && managerSlotIndex >= 0 && managerSlotIndex < list.Count)
-        {
-            return list[managerSlotIndex];
-        }
-
-        return null;
-    }
-
-    private Sprite GetThumbnail(int managerSlotIndex, object metadata)
-    {
-        object methodResult = InvokeCandidateMethod(saveManager,
-            new[]
-            {
-                "LoadSlotThumbnail",
-                "GetSlotThumbnail",
-                "GetThumbnailForSlot",
-                "LoadThumbnailForSlot",
-                "GetSaveThumbnail"
-            },
-            managerSlotIndex);
-
-        Sprite sprite = ConvertToSprite(methodResult);
-        if (sprite != null)
-        {
-            return sprite;
-        }
-
-        object memberValue = ReadMemberValue(metadata,
-            "thumbnail",
-            "Thumbnail",
-            "previewImage",
-            "PreviewImage",
-            "screenshot",
-            "Screenshot");
-
-        return ConvertToSprite(memberValue);
-    }
-
-    private bool DetermineHasData(object metadata, Sprite thumbnail)
-    {
-        if (metadata == null && thumbnail == null)
-        {
-            return false;
-        }
-
-        object hasDataValue = ReadMemberValue(metadata, "HasData", "hasData", "IsOccupied", "isOccupied");
-        if (hasDataValue is bool hasDataBool)
-        {
-            return hasDataBool;
-        }
-
-        object isEmptyValue = ReadMemberValue(metadata, "IsEmpty", "isEmpty");
-        if (isEmptyValue is bool isEmptyBool)
-        {
-            return !isEmptyBool;
-        }
-
-        string sceneName = ReadStringMember(metadata, "sceneName", "SceneName", "sceneId", "SceneId", "scene", "Scene");
-        if (!string.IsNullOrWhiteSpace(sceneName))
-        {
-            return true;
-        }
-
-        string dateText = BuildDateText(metadata);
-        if (!string.IsNullOrWhiteSpace(dateText))
-        {
-            return true;
-        }
-
-        if (thumbnail != null)
-        {
-            return true;
-        }
-
-        return false;
     }
 
     private string ResolveSceneDisplayName(string sceneName)
@@ -334,259 +176,118 @@ public class PauseMenuSaveAdapter : MonoBehaviour
         return sceneName;
     }
 
-    private string BuildDateText(object metadata)
+    private string FormatSaveDate(string rawUtcDate)
     {
-        object rawDate = ReadMemberValue(metadata,
-            "saveTimestampUtc",
-            "SaveTimestampUtc",
-            "saveTimeUtc",
-            "SaveTimeUtc",
-            "savedAtUtc",
-            "SavedAtUtc",
-            "timestampUtc",
-            "TimestampUtc",
-            "savedAt",
-            "SavedAt",
-            "saveDate",
-            "SaveDate");
-
-        if (rawDate == null)
+        if (string.IsNullOrWhiteSpace(rawUtcDate))
         {
             return string.Empty;
         }
 
-        if (rawDate is DateTime dateTime)
+        if (DateTime.TryParse(
+                rawUtcDate,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal,
+                out DateTime parsedUtc))
         {
-            return dateTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm");
+            return parsedUtc.ToLocalTime().ToString("dd.MM.yyyy HH:mm");
         }
 
-        if (rawDate is string dateString)
+        if (DateTime.TryParse(rawUtcDate, out DateTime parsedLocal))
         {
-            if (DateTime.TryParse(dateString, CultureInfo.InvariantCulture,
-                    DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, out DateTime parsedUtc))
-            {
-                return parsedUtc.ToLocalTime().ToString("dd.MM.yyyy HH:mm");
-            }
-
-            if (DateTime.TryParse(dateString, out DateTime parsedLocal))
-            {
-                return parsedLocal.ToString("dd.MM.yyyy HH:mm");
-            }
-
-            return dateString;
+            return parsedLocal.ToString("dd.MM.yyyy HH:mm");
         }
 
-        try
-        {
-            long numeric = Convert.ToInt64(rawDate);
-
-            if (numeric > 1000000000000L)
-            {
-                DateTime unixMilliseconds = DateTimeOffset.FromUnixTimeMilliseconds(numeric).LocalDateTime;
-                return unixMilliseconds.ToString("dd.MM.yyyy HH:mm");
-            }
-
-            if (numeric > 1000000000L)
-            {
-                DateTime unixSeconds = DateTimeOffset.FromUnixTimeSeconds(numeric).LocalDateTime;
-                return unixSeconds.ToString("dd.MM.yyyy HH:mm");
-            }
-
-            if (numeric > 1000000L)
-            {
-                DateTime ticksDate = new DateTime(numeric, DateTimeKind.Utc).ToLocalTime();
-                return ticksDate.ToString("dd.MM.yyyy HH:mm");
-            }
-        }
-        catch
-        {
-            // ignored
-        }
-
-        return rawDate.ToString();
+        return rawUtcDate;
     }
 
-    private int ReadIntMember(object target, params string[] memberNames)
+    private Sprite GetOrCreateThumbnailSprite(int managerSlotIndex)
     {
-        object value = ReadMemberValue(target, memberNames);
-
-        if (value == null)
+        if (cachedSprites.TryGetValue(managerSlotIndex, out Sprite existingSprite) && existingSprite != null)
         {
-            return 0;
+            return existingSprite;
         }
 
-        try
-        {
-            return Convert.ToInt32(value);
-        }
-        catch
-        {
-            return 0;
-        }
-    }
-
-    private string ReadStringMember(object target, params string[] memberNames)
-    {
-        object value = ReadMemberValue(target, memberNames);
-        return value?.ToString() ?? string.Empty;
-    }
-
-    private object ReadMemberValue(object target, params string[] memberNames)
-    {
-        if (target == null)
+        Texture2D texture = saveManager.LoadThumbnail(managerSlotIndex);
+        if (texture == null)
         {
             return null;
         }
 
-        Type type = target.GetType();
+        cachedTextures[managerSlotIndex] = texture;
 
-        for (int i = 0; i < memberNames.Length; i++)
-        {
-            string memberName = memberNames[i];
+        Rect rect = new Rect(0f, 0f, texture.width, texture.height);
+        Vector2 pivot = new Vector2(0.5f, 0.5f);
 
-            FieldInfo field = type.GetField(memberName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            if (field != null)
-            {
-                return field.GetValue(target);
-            }
+        Sprite createdSprite = Sprite.Create(texture, rect, pivot);
+        createdSprite.name = $"PauseMenuThumbnail_{managerSlotIndex}";
+        cachedSprites[managerSlotIndex] = createdSprite;
 
-            PropertyInfo property = type.GetProperty(memberName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            if (property != null && property.GetIndexParameters().Length == 0)
-            {
-                return property.GetValue(target);
-            }
-        }
-
-        return null;
+        return createdSprite;
     }
 
-    private object InvokeCandidateMethod(object target, string[] methodNames, params object[] args)
+    private void SubscribeToSaveManager()
     {
-        if (target == null)
+        if (isSubscribedToSaveManager || saveManager == null)
         {
-            return null;
+            return;
         }
 
-        Type type = target.GetType();
-        MethodInfo[] methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        saveManager.OnSlotChanged += HandleSlotChanged;
+        isSubscribedToSaveManager = true;
+    }
 
-        for (int i = 0; i < methodNames.Length; i++)
+    private void UnsubscribeFromSaveManager()
+    {
+        if (!isSubscribedToSaveManager || saveManager == null)
         {
-            string methodName = methodNames[i];
+            isSubscribedToSaveManager = false;
+            return;
+        }
 
-            for (int j = 0; j < methods.Length; j++)
+        saveManager.OnSlotChanged -= HandleSlotChanged;
+        isSubscribedToSaveManager = false;
+    }
+
+    private void HandleSlotChanged(int managerSlotIndex)
+    {
+        InvalidateThumbnailCacheForSlot(managerSlotIndex);
+    }
+
+    private void InvalidateThumbnailCacheForSlot(int managerSlotIndex)
+    {
+        if (cachedSprites.TryGetValue(managerSlotIndex, out Sprite sprite) && sprite != null)
+        {
+            Destroy(sprite);
+        }
+
+        if (cachedTextures.TryGetValue(managerSlotIndex, out Texture2D texture) && texture != null)
+        {
+            Destroy(texture);
+        }
+
+        cachedSprites.Remove(managerSlotIndex);
+        cachedTextures.Remove(managerSlotIndex);
+    }
+
+    private void ClearThumbnailCache()
+    {
+        foreach (KeyValuePair<int, Sprite> pair in cachedSprites)
+        {
+            if (pair.Value != null)
             {
-                MethodInfo method = methods[j];
-
-                if (method.Name != methodName)
-                {
-                    continue;
-                }
-
-                ParameterInfo[] parameters = method.GetParameters();
-                if (parameters.Length != args.Length)
-                {
-                    continue;
-                }
-
-                try
-                {
-                    return method.Invoke(target, args);
-                }
-                catch (Exception ex)
-                {
-                    if (verboseLogs)
-                    {
-                        Debug.LogWarning($"[PauseMenuSaveAdapter] Failed to invoke {method.Name}: {ex.Message}");
-                    }
-                }
+                Destroy(pair.Value);
             }
         }
 
-        return null;
-    }
-
-    private bool TryInvokeCandidateMethod(object target, string[] methodNames, params object[] args)
-    {
-        if (target == null)
+        foreach (KeyValuePair<int, Texture2D> pair in cachedTextures)
         {
-            return false;
-        }
-
-        Type type = target.GetType();
-        MethodInfo[] methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-
-        for (int i = 0; i < methodNames.Length; i++)
-        {
-            string methodName = methodNames[i];
-
-            for (int j = 0; j < methods.Length; j++)
+            if (pair.Value != null)
             {
-                MethodInfo method = methods[j];
-
-                if (method.Name != methodName)
-                {
-                    continue;
-                }
-
-                ParameterInfo[] parameters = method.GetParameters();
-                if (parameters.Length != args.Length)
-                {
-                    continue;
-                }
-
-                try
-                {
-                    method.Invoke(target, args);
-                    return true;
-                }
-                catch (Exception ex)
-                {
-                    if (verboseLogs)
-                    {
-                        Debug.LogWarning($"[PauseMenuSaveAdapter] Failed to invoke {method.Name}: {ex.Message}");
-                    }
-                }
+                Destroy(pair.Value);
             }
         }
 
-        return false;
-    }
-
-    private Sprite ConvertToSprite(object value)
-    {
-        if (value == null)
-        {
-            return null;
-        }
-
-        if (value is Sprite sprite)
-        {
-            return sprite;
-        }
-
-        if (value is Texture2D texture)
-        {
-            Rect rect = new Rect(0f, 0f, texture.width, texture.height);
-            Vector2 pivot = new Vector2(0.5f, 0.5f);
-            return Sprite.Create(texture, rect, pivot);
-        }
-
-        if (value is RenderTexture renderTexture)
-        {
-            Texture2D texture2D = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.RGBA32, false);
-
-            RenderTexture previous = RenderTexture.active;
-            RenderTexture.active = renderTexture;
-            texture2D.ReadPixels(new Rect(0f, 0f, renderTexture.width, renderTexture.height), 0, 0);
-            texture2D.Apply();
-            RenderTexture.active = previous;
-
-            Rect rect = new Rect(0f, 0f, texture2D.width, texture2D.height);
-            Vector2 pivot = new Vector2(0.5f, 0.5f);
-            return Sprite.Create(texture2D, rect, pivot);
-        }
-
-        return null;
+        cachedSprites.Clear();
+        cachedTextures.Clear();
     }
 }

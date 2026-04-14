@@ -41,7 +41,6 @@ public class PauseMenuSaveLoadRootUI : MonoBehaviour
     private void Awake()
     {
         cachedHasData = new bool[Mathf.Max(UsableDataSlotCount, 1)];
-        HideRoot();
     }
 
     public void ShowRoot()
@@ -121,6 +120,11 @@ public class PauseMenuSaveLoadRootUI : MonoBehaviour
         if (cachedHasData == null || cachedHasData.Length != Mathf.Max(usableDataSlots, 1))
         {
             cachedHasData = new bool[Mathf.Max(usableDataSlots, 1)];
+        }
+
+        if (selectedIndex < 0 || selectedIndex > BackSlotIndex)
+        {
+            selectedIndex = 0;
         }
 
         for (int i = 0; i < usableDataSlots; i++)
