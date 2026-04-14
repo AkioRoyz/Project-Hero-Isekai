@@ -15,12 +15,6 @@ public class PauseMenuSaveLoadRootUI : MonoBehaviour
     [SerializeField] private PauseMenuSaveAdapter saveAdapter;
     [SerializeField] private PauseMenuSlotViewUI[] slotViews;
 
-    [Header("Texts")]
-    [SerializeField] private string slotPrefix = "Слот";
-    [SerializeField] private string emptySlotText = "Пустой слот";
-    [SerializeField] private string backText = "Назад";
-    [SerializeField] private string levelPrefix = "Уровень";
-
     [Header("Layout")]
     [SerializeField] private int dataSlotCount = 5;
 
@@ -147,24 +141,22 @@ public class PauseMenuSaveLoadRootUI : MonoBehaviour
             if (!hasPresentation || !data.HasData)
             {
                 cachedHasData[i] = false;
-                slotViews[i].ShowAsEmptySaveSlot(i + 1, slotPrefix, emptySlotText);
+                slotViews[i].ShowAsEmptySaveSlot(i + 1);
                 continue;
             }
 
             cachedHasData[i] = true;
             slotViews[i].ShowAsFilledSaveSlot(
                 i + 1,
-                slotPrefix,
                 data.DisplaySceneName,
                 data.SaveDateText,
                 data.PlayerLevel,
-                levelPrefix,
                 data.Thumbnail);
         }
 
         if (slotViews.Length > BackSlotIndex && slotViews[BackSlotIndex] != null)
         {
-            slotViews[BackSlotIndex].ShowAsBackOption(backText);
+            slotViews[BackSlotIndex].ShowAsBackOption();
         }
 
         for (int i = BackSlotIndex + 1; i < slotViews.Length; i++)

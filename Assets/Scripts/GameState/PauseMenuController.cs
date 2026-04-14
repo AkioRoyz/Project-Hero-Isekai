@@ -20,12 +20,6 @@ public class PauseMenuController : MonoBehaviour
     [SerializeField] private PauseMenuSaveLoadRootUI loadRootUI;
     [SerializeField] private PauseMenuSlotViewUI[] mainMenuSlots;
 
-    [Header("Main Menu Text")]
-    [SerializeField] private string continueText = "Продолжить";
-    [SerializeField] private string saveText = "Сохранить игру";
-    [SerializeField] private string loadText = "Загрузить игру";
-    [SerializeField] private string quitText = "Выйти из игры";
-
     [Header("Pause Visuals")]
     [SerializeField] private GameObject pauseOverlayRoot;
     [SerializeField] private GameObject quitMessageRoot;
@@ -516,28 +510,15 @@ public class PauseMenuController : MonoBehaviour
             mainSelectionIndex = 0;
         }
 
-        if (mainMenuSlots.Length > 0 && mainMenuSlots[0] != null)
+        for (int i = 0; i < mainMenuSlots.Length; i++)
         {
-            mainMenuSlots[0].ShowAsMainOption(continueText);
-            mainMenuSlots[0].SetSelected(mainSelectionIndex == 0);
-        }
+            if (mainMenuSlots[i] == null)
+            {
+                continue;
+            }
 
-        if (mainMenuSlots.Length > 1 && mainMenuSlots[1] != null)
-        {
-            mainMenuSlots[1].ShowAsMainOption(saveText);
-            mainMenuSlots[1].SetSelected(mainSelectionIndex == 1);
-        }
-
-        if (mainMenuSlots.Length > 2 && mainMenuSlots[2] != null)
-        {
-            mainMenuSlots[2].ShowAsMainOption(loadText);
-            mainMenuSlots[2].SetSelected(mainSelectionIndex == 2);
-        }
-
-        if (mainMenuSlots.Length > 3 && mainMenuSlots[3] != null)
-        {
-            mainMenuSlots[3].ShowAsMainOption(quitText);
-            mainMenuSlots[3].SetSelected(mainSelectionIndex == 3);
+            mainMenuSlots[i].ShowAsMainOption();
+            mainMenuSlots[i].SetSelected(i == mainSelectionIndex);
         }
     }
 

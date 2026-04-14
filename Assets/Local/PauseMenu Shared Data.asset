@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: PauseMenu Shared Data
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
+  m_TableCollectionName: PauseMenu
+  m_TableCollectionNameGuidString: 09f1288396d181746a55c24560bc8ac6
+  m_Entries:
+  - m_Id: 5625606144
+    m_Key: pause_continue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 556392247296
+    m_Key: pause_save
+    m_Metadata:
+      m_Items: []
+  - m_Id: 758138269696
+    m_Key: pause_load
+    m_Metadata:
+      m_Items: []
+  - m_Id: 970764316672
+    m_Key: pause_quit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4331098075136
+    m_Key: pause_slot_title
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4582097809408
+    m_Key: pause_level_label
+    m_Metadata:
+      m_Items: []
+  - m_Id: 4922729820160
+    m_Key: pause_empty_slot
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6232015368192
+    m_Key: pause_back
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 846794700884279374
+  references:
+    version: 2
+    RefIds:
+    - rid: 846794700884279374
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1776154914296
