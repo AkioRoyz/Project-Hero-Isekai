@@ -1161,7 +1161,7 @@ GameObject:
   - component: {fileID: 891491421}
   - component: {fileID: 891491420}
   - component: {fileID: 891491419}
-  - component: {fileID: 891491418}
+  - component: {fileID: 891491422}
   m_Layer: 0
   m_Name: LoadTrigger
   m_TagString: Untagged
@@ -1169,20 +1169,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &891491418
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 891491417}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dea0db0347aaa5c4dbfad11312983076, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LoadZoneTrigger
-  menuController: {fileID: 395912301}
-  playerTag: Player
 --- !u!61 &891491419
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1303,6 +1289,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &891491422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 891491417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02ea82d1a433f9a40b4964eaf73b0132, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PauseLoadZoneTrigger
+  playerTag: Player
+  triggerOnlyOncePerEntry: 1
+  doNotTriggerIfPauseAlreadyOpen: 1
+  verboseLogs: 0
 --- !u!1 &1105754263
 GameObject:
   m_ObjectHideFlags: 0

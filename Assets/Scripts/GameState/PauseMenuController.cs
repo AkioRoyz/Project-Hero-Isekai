@@ -7,7 +7,8 @@ public class PauseMenuController : MonoBehaviour
     {
         Main,
         Save,
-        Load
+        Load,
+        TriggerLoad
     }
 
     [Header("Main References")]
@@ -15,6 +16,7 @@ public class PauseMenuController : MonoBehaviour
     [SerializeField] private GameObject mainRoot;
     [SerializeField] private PauseMenuSaveLoadRootUI saveRootUI;
     [SerializeField] private PauseMenuSaveLoadRootUI loadRootUI;
+    [SerializeField] private PauseMenuSaveLoadRootUI triggerLoadRootUI;
     [SerializeField] private PauseMenuSlotViewUI[] mainMenuSlots;
 
     [Header("Pause Visuals")]
@@ -96,6 +98,12 @@ public class PauseMenuController : MonoBehaviour
             loadRootUI.DataSlotChosen += HandleLoadSlotChosen;
             loadRootUI.BackRequested += HandleLoadBackRequested;
         }
+
+        if (triggerLoadRootUI != null)
+        {
+            triggerLoadRootUI.DataSlotChosen += HandleTriggerLoadSlotChosen;
+            triggerLoadRootUI.BackRequested += HandleTriggerLoadBackRequested;
+        }
     }
 
     private void UnbindRootEvents()
@@ -110,6 +118,12 @@ public class PauseMenuController : MonoBehaviour
         {
             loadRootUI.DataSlotChosen -= HandleLoadSlotChosen;
             loadRootUI.BackRequested -= HandleLoadBackRequested;
+        }
+
+        if (triggerLoadRootUI != null)
+        {
+            triggerLoadRootUI.DataSlotChosen -= HandleTriggerLoadSlotChosen;
+            triggerLoadRootUI.BackRequested -= HandleTriggerLoadBackRequested;
         }
     }
 
@@ -231,6 +245,37 @@ public class PauseMenuController : MonoBehaviour
             return;
         }
 
+        OpenPauseShell();
+        ShowMainRoot();
+
+        if (verboseLogs)
+        {
+            Debug.Log("[PauseMenuController] Pause opened.");
+        }
+    }
+
+    public void OpenTriggerLoadMenu()
+    {
+        if (GameInput.Instance == null)
+        {
+            return;
+        }
+
+        if (!isOpen)
+        {
+            OpenPauseShell();
+        }
+
+        ShowTriggerLoadRoot();
+
+        if (verboseLogs)
+        {
+            Debug.Log("[PauseMenuController] Trigger load menu opened.");
+        }
+    }
+
+    private void OpenPauseShell()
+    {
         isOpen = true;
         activeRoot = ActiveRoot.Main;
 
@@ -260,12 +305,6 @@ public class PauseMenuController : MonoBehaviour
         }
 
         blackAndWhiteEffect?.EnablePauseEffect();
-        ShowMainRoot();
-
-        if (verboseLogs)
-        {
-            Debug.Log("[PauseMenuController] Pause opened.");
-        }
     }
 
     public void ClosePauseMenu()
@@ -345,6 +384,7 @@ public class PauseMenuController : MonoBehaviour
         }
 
         loadRootUI?.HideRoot();
+        triggerLoadRootUI?.HideRoot();
         saveRootUI.ShowRoot();
     }
 
@@ -363,7 +403,27 @@ public class PauseMenuController : MonoBehaviour
         }
 
         saveRootUI?.HideRoot();
+        triggerLoadRootUI?.HideRoot();
         loadRootUI.ShowRoot();
+    }
+
+    public void ShowTriggerLoadRoot()
+    {
+        if (triggerLoadRootUI == null)
+        {
+            return;
+        }
+
+        activeRoot = ActiveRoot.TriggerLoad;
+
+        if (mainRoot != null)
+        {
+            mainRoot.SetActive(false);
+        }
+
+        saveRootUI?.HideRoot();
+        loadRootUI?.HideRoot();
+        triggerLoadRootUI.ShowRoot();
     }
 
     public void ShowMainRoot()
@@ -377,6 +437,7 @@ public class PauseMenuController : MonoBehaviour
 
         saveRootUI?.HideRoot();
         loadRootUI?.HideRoot();
+        triggerLoadRootUI?.HideRoot();
 
         RefreshMainMenuVisuals();
     }
@@ -390,6 +451,7 @@ public class PauseMenuController : MonoBehaviour
 
         saveRootUI?.HideRoot();
         loadRootUI?.HideRoot();
+        triggerLoadRootUI?.HideRoot();
     }
 
     private void ForceClosedState()
@@ -437,6 +499,10 @@ public class PauseMenuController : MonoBehaviour
             case ActiveRoot.Load:
                 loadRootUI?.MoveSelection(direction);
                 break;
+
+            case ActiveRoot.TriggerLoad:
+                triggerLoadRootUI?.MoveSelection(direction);
+                break;
         }
     }
 
@@ -454,6 +520,10 @@ public class PauseMenuController : MonoBehaviour
 
             case ActiveRoot.Load:
                 loadRootUI?.SubmitCurrentSelection();
+                break;
+
+            case ActiveRoot.TriggerLoad:
+                triggerLoadRootUI?.SubmitCurrentSelection();
                 break;
         }
     }
@@ -542,7 +612,17 @@ public class PauseMenuController : MonoBehaviour
             return;
         }
 
-        StartCoroutine(LoadRoutine(slotIndex));
+        StartCoroutine(LoadRoutine(slotIndex, loadRootUI));
+    }
+
+    private void HandleTriggerLoadSlotChosen(int slotIndex)
+    {
+        if (isBusy)
+        {
+            return;
+        }
+
+        StartCoroutine(LoadRoutine(slotIndex, triggerLoadRootUI));
     }
 
     private void HandleSaveBackRequested()
@@ -557,6 +637,11 @@ public class PauseMenuController : MonoBehaviour
         ShowMainRoot();
         mainSelectionIndex = 2;
         RefreshMainMenuVisuals();
+    }
+
+    private void HandleTriggerLoadBackRequested()
+    {
+        ClosePauseMenu();
     }
 
     private IEnumerator SaveRoutine(int slotIndex)
@@ -581,7 +666,7 @@ public class PauseMenuController : MonoBehaviour
         isBusy = false;
     }
 
-    private IEnumerator LoadRoutine(int slotIndex)
+    private IEnumerator LoadRoutine(int slotIndex, PauseMenuSaveLoadRootUI sourceRoot)
     {
         isBusy = true;
 
@@ -592,9 +677,9 @@ public class PauseMenuController : MonoBehaviour
             yield return new WaitForSecondsRealtime(loadDelayBeforeSaveLoadCall);
         }
 
-        if (loadRootUI != null && loadRootUI.SaveAdapter != null)
+        if (sourceRoot != null && sourceRoot.SaveAdapter != null)
         {
-            loadRootUI.SaveAdapter.LoadFromSlot(slotIndex);
+            sourceRoot.SaveAdapter.LoadFromSlot(slotIndex);
         }
 
         isBusy = false;
