@@ -20635,7 +20635,7 @@ RectTransform:
   m_GameObject: {fileID: 828364889}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 2.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1679233065}
@@ -20658,7 +20658,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.53631186, g: 0.8046115, b: 0.8679245, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -33727,7 +33727,7 @@ GameObject:
   - component: {fileID: 1310919830}
   - component: {fileID: 1310919833}
   - component: {fileID: 1310919832}
-  - component: {fileID: 1310919831}
+  - component: {fileID: 1310919834}
   m_Layer: 0
   m_Name: SpinnerIcon
   m_TagString: Untagged
@@ -33751,23 +33751,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -123, y: 199}
-  m_SizeDelta: {x: 96, y: 96}
+  m_AnchoredPosition: {x: -83, y: 159}
+  m_SizeDelta: {x: 150, y: 150}
   m_Pivot: {x: 1, y: 0}
---- !u!114 &1310919831
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1310919829}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de761e9aba815994f9cccdf60600f0f4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::LoadingSpinner
-  degreesPerSecond: 180
-  clockwise: 1
 --- !u!114 &1310919832
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -33788,7 +33774,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 6905159096273010811, guid: b187cc9f2c641894f990c0af60ab8fe1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2fec7b192873c1c459f0a1fcd4de5bc5, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -33806,6 +33792,41 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1310919829}
   m_CullTransparentMesh: 1
+--- !u!114 &1310919834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1310919829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ef704820f4424d48aaffe32db12e766, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FloatingMoverAdvanced
+  useLocalPosition: 1
+  randomStartOffset: 0
+  movementMode: 0
+  moveX: 0
+  moveY: 3
+  moveZ: 0
+  speedX: 1
+  speedY: 3
+  speedZ: 1
+  phaseX: 0
+  phaseY: 0
+  phaseZ: 0
+  enableRotationSway: 0
+  useLocalRotation: 1
+  rotateX: 0
+  rotateY: 0
+  rotateZ: 0
+  rotateSpeedX: 1
+  rotateSpeedY: 1
+  rotateSpeedZ: 1
+  rotatePhaseX: 0
+  rotatePhaseY: 0
+  rotatePhaseZ: 0
 --- !u!1 &1315467405
 GameObject:
   m_ObjectHideFlags: 0
@@ -35296,15 +35317,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: New Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 18e7068b030b0114e960e950743503a0, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 237f7c3f51ab80a46a9e40ccf9bce2ce, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4282753413
-  m_fontColor: {r: 0.52078956, g: 0.6320754, b: 0.2713154, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -35321,13 +35342,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 80
+  m_fontSizeBase: 80
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 1
+  m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -40499,7 +40520,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 5}
   m_SizeDelta: {x: 473, y: 70}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1564543899
@@ -40524,8 +40545,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 0%
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 18e7068b030b0114e960e950743503a0, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 237f7c3f51ab80a46a9e40ccf9bce2ce, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -40549,8 +40570,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 70
+  m_fontSizeBase: 70
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -50831,7 +50852,7 @@ RectTransform:
   m_GameObject: {fileID: 2037887940}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 2.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 795234268}
@@ -50854,7 +50875,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.2216981, g: 0.9945562, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

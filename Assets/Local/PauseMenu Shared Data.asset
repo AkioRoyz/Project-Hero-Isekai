@@ -47,6 +47,10 @@ MonoBehaviour:
     m_Key: pause_back
     m_Metadata:
       m_Items: []
+  - m_Id: 768611087020032
+    m_Key: pause_quit_message
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

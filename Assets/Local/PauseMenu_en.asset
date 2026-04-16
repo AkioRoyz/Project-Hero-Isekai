@@ -50,6 +50,10 @@ MonoBehaviour:
     m_Localized: Back
     m_Metadata:
       m_Items: []
+  - m_Id: 768611087020032
+    m_Localized: Shto-to na agliiskom
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
