@@ -32,6 +32,8 @@ public class DialogueManager : MonoBehaviour
     private IDialogueQuestProvider questProvider;
     private IDialogueActionQuestHandler questActionHandler;
 
+    private IDialogueSource currentSource;
+
     private int uiRefreshVersion = 0;
 
     private DialogueData currentDialogue;
@@ -155,6 +157,7 @@ public class DialogueManager : MonoBehaviour
 
         currentDialogue = dialogueData;
         currentContext = context;
+        currentSource = source;
         currentNodeIndex = firstValidNodeIndex;
         selectedChoiceIndex = 0;
         isDialogueActive = true;
@@ -189,6 +192,7 @@ public class DialogueManager : MonoBehaviour
 
         currentDialogue = null;
         currentContext = null;
+        currentSource = null;
         currentNodeIndex = -1;
         selectedChoiceIndex = 0;
         isDialogueActive = false;
@@ -722,6 +726,41 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
+    private void TryOpenMerchantFromCurrentSource()
+    {
+        if (currentSource == null)
+        {
+            Debug.LogWarning("DialogueManager: current dialogue source is missing.");
+            return;
+        }
+
+        Component sourceComponent = currentSource as Component;
+        if (sourceComponent == null)
+        {
+            Debug.LogWarning("DialogueManager: current dialogue source is not a Component.");
+            return;
+        }
+
+        IMerchantSource merchantSource = sourceComponent.GetComponent<IMerchantSource>();
+        if (merchantSource == null || merchantSource.MerchantData == null)
+        {
+            Debug.LogWarning($"DialogueManager: merchant source is missing on '{sourceComponent.name}'.");
+            return;
+        }
+
+        if (MerchantMenuUI.Instance == null)
+        {
+            Debug.LogWarning("DialogueManager: MerchantMenuUI.Instance is missing.");
+            return;
+        }
+
+        bool opened = MerchantMenuUI.Instance.OpenForMerchant(merchantSource);
+        if (!opened)
+        {
+            Debug.LogWarning("DialogueManager: failed to open merchant UI.");
+        }
+    }
+
     private void ExecuteAction(DialogueActionData action)
     {
         if (action == null)
@@ -731,6 +770,12 @@ public class DialogueManager : MonoBehaviour
         {
             case DialogueActionType.None:
                 break;
+
+            case DialogueActionType.OpenMerchant:
+                {
+                    TryOpenMerchantFromCurrentSource();
+                    break;
+                }
 
             case DialogueActionType.GiveReward:
                 if (RewardSystem.Instance != null)

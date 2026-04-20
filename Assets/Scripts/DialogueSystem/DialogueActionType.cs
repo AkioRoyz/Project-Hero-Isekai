@@ -1,19 +1,10 @@
 public enum DialogueActionType
 {
-    None,
-
-    // Выдать награду: опыт, золото, предметы
-    GiveReward,
-
-    // Удалить предмет из инвентаря
-    RemoveItem,
-
-    // Пометить ключ как использованный
-    MarkPlayed,
-
-    // Действие над всем квестом: взять, завершить, провалить и т.д.
-    QuestAction,
-
-    // Засчитать конкретную задачу квеста
-    AcceptQuestObjective
+    None = 0,
+    GiveReward = 1,
+    RemoveItem = 2,
+    MarkPlayed = 3,
+    QuestAction = 4,
+    AcceptQuestObjective = 5,
+    OpenMerchant = 6
 }

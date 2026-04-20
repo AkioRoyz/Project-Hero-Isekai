@@ -72,9 +72,23 @@ public class QuestStateSaveData
 }
 
 [Serializable]
+public class MerchantStockRemainingSaveData
+{
+    public string merchantId;
+    public string itemId;
+    public int remainingAmount;
+}
+
+[Serializable]
+public class MerchantRuntimeStateSaveData
+{
+    public List<MerchantStockRemainingSaveData> remainingStocks = new List<MerchantStockRemainingSaveData>();
+}
+
+[Serializable]
 public class GameSaveData
 {
-    public int version = 1;
+    public int version = 2;
     public string sceneName;
     public string saveTimestampUtc;
     public int playerLevel;
@@ -84,6 +98,7 @@ public class GameSaveData
     public EquipmentStateSaveData equipment = new EquipmentStateSaveData();
     public DialogueStateSaveData dialogue = new DialogueStateSaveData();
     public QuestStateSaveData quests = new QuestStateSaveData();
+    public MerchantRuntimeStateSaveData merchants = new MerchantRuntimeStateSaveData();
 }
 
 [Serializable]

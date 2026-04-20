@@ -31,7 +31,7 @@ public class SaveManager : MonoBehaviour
     [SerializeField] private int slotCount = 5;
     [SerializeField] private bool verboseLogs;
 
-    private const int CurrentSaveVersion = 1;
+    private const int CurrentSaveVersion = 2;
     private static readonly BindingFlags BindingFlagsInstance = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
     private GameSaveData pendingLoadData;
@@ -244,6 +244,7 @@ public class SaveManager : MonoBehaviour
             data.quests.failedQuests = CloneQuestList(QuestManager.Instance.FailedQuests);
         }
 
+        data.merchants = MerchantRuntimeState.CaptureState();
         return data;
     }
 
@@ -257,10 +258,16 @@ public class SaveManager : MonoBehaviour
         ApplyEquipment(data.equipment);
         ApplyDialogue(data.dialogue);
         ApplyQuests(data.quests);
+        ApplyMerchants(data.merchants);
         ApplyPlayerPosition(data.playerPosition);
 
         if (verboseLogs)
             Debug.Log("SaveManager: load applied for scene " + data.sceneName);
+    }
+
+    private void ApplyMerchants(MerchantRuntimeStateSaveData merchantData)
+    {
+        MerchantRuntimeState.RestoreState(merchantData);
     }
 
     private void ApplyPlayerProgress(PlayerProgressSaveData progress)
