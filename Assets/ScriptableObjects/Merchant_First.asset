@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a109709d689f8f54f948c4642d834b7e, type: 3}
+  m_Name: Merchant_First
+  m_EditorClassIdentifier: Assembly-CSharp::MerchantData
+  merchantId: merchant_first
+  stockEntries:
+  - item: {fileID: 11400000, guid: 4362e2801a870d54e9c671c3855ec616, type: 2}
+    stockMode: 0
+    limitedAmount: 0
+  - item: {fileID: 11400000, guid: 1cc543ca1c32b7e4282124b10a78064d, type: 2}
+    stockMode: 0
+    limitedAmount: 0
+  - item: {fileID: 11400000, guid: 1b800207211de6a4cbbe495adf90d670, type: 2}
+    stockMode: 0
+    limitedAmount: 0

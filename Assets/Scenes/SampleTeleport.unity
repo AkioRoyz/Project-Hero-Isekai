@@ -1369,6 +1369,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1892399660515205355, guid: b2ff964321ffe5c4a809137c9a2af90a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5028454102970830304, guid: b2ff964321ffe5c4a809137c9a2af90a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.3080702
@@ -1420,8 +1424,50 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5812781625022893479, guid: b2ff964321ffe5c4a809137c9a2af90a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1616133886}
+    - targetCorrespondingSourceObject: {fileID: 5812781625022893479, guid: b2ff964321ffe5c4a809137c9a2af90a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1616133885}
   m_SourcePrefab: {fileID: 100100000, guid: b2ff964321ffe5c4a809137c9a2af90a, type: 3}
+--- !u!1 &1616133884 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5812781625022893479, guid: b2ff964321ffe5c4a809137c9a2af90a, type: 3}
+  m_PrefabInstance: {fileID: 1616133883}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1616133885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1616133884}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa8b96b21fecbf14a997250909bd1335, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MerchantSource
+  merchantData: {fileID: 11400000, guid: 85d46e91a0115cd479c5ecc804bb259e, type: 2}
+--- !u!114 &1616133886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1616133884}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3c5c654cb46f81428bf2ed945f45f27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NpcDialogueInteractable
+  dialogueData: {fileID: 11400000, guid: 971144a647f3ca3458d4082c4a4f51fd, type: 2}
+  speakerData: {fileID: 11400000, guid: 4e487a7343e8ebf4ab26379dce8fa83f, type: 2}
+  npcRole: 2
+  npcId: merchant_npc_first
+  notifyQuestTalkOnDialogueStart: 0
+  interactionHintObject: {fileID: 0}
 --- !u!1001 &1674037985
 PrefabInstance:
   m_ObjectHideFlags: 0

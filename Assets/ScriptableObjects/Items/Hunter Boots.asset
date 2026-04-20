@@ -40,6 +40,8 @@ MonoBehaviour:
   equipmentStrengthBonus: 0
   equipmentManaBonus: 0
   equipmentDefenceBonus: 2
+  basePrice: 50
+  canSellToMerchant: 1
   references:
     version: 2
     RefIds: []

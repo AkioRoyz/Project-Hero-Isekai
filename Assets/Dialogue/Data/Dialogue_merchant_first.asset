@@ -1,0 +1,110 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb00193ea6da65548aa9e8d0cdbe32a4, type: 3}
+  m_Name: Dialogue_merchant_first
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueData
+  dialogueId: merchant_first
+  repeatable: 1
+  conditions: []
+  nodes:
+  - inspectorNodeTitle: Items
+    nodeType: 1
+    isStartNode: 1
+    speakerMode: 0
+    customSpeakerName:
+      m_TableReference:
+        m_TableCollectionName: 
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    speakerPortrait: {fileID: 0}
+    dialogueText:
+      m_TableReference:
+        m_TableCollectionName: 
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    nextNodeIndex: -1
+    choices:
+    - inspectorChoiceTitle: 
+      isQuestRelated: 0
+      showQuestMarker: 0
+      choiceText:
+        m_TableReference:
+          m_TableCollectionName: GUID:b7fa0654d63a80c4ba9b0d68ecd122a6
+        m_TableEntryReference:
+          m_KeyId: 10682313115447296
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
+      nextNodeIndex: 0
+      conditions: []
+      unavailableMode: 0
+      disabledChoiceText:
+        m_TableReference:
+          m_TableCollectionName: 
+        m_TableEntryReference:
+          m_KeyId: 0
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
+      onSelectActions:
+      - actionType: 6
+        rewardData:
+          Exp: 0
+          Gold: 0
+          Items: []
+        itemToRemove: {fileID: 0}
+        itemRemoveAmount: 0
+        playedKey: 
+        questId: 
+        questActionType: 0
+        questObjectiveId: 
+        questObjectiveAmount: 0
+    - inspectorChoiceTitle: 
+      isQuestRelated: 0
+      showQuestMarker: 0
+      choiceText:
+        m_TableReference:
+          m_TableCollectionName: GUID:b7fa0654d63a80c4ba9b0d68ecd122a6
+        m_TableEntryReference:
+          m_KeyId: 10682407269183488
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
+      nextNodeIndex: -1
+      conditions: []
+      unavailableMode: 0
+      disabledChoiceText:
+        m_TableReference:
+          m_TableCollectionName: 
+        m_TableEntryReference:
+          m_KeyId: 0
+          m_Key: 
+        m_FallbackState: 0
+        m_WaitForCompletion: 0
+        m_LocalVariables: []
+      onSelectActions: []
+    conditions: []
+    onEnterActions: []
+  references:
+    version: 2
+    RefIds: []

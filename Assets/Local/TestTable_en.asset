@@ -82,6 +82,14 @@ MonoBehaviour:
     m_Localized: eh..
     m_Metadata:
       m_Items: []
+  - m_Id: 10682313115447296
+    m_Localized: Show me what u have
+    m_Metadata:
+      m_Items: []
+  - m_Id: 10682407269183488
+    m_Localized: I have to go
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
