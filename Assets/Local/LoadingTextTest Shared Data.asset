@@ -27,6 +27,10 @@ MonoBehaviour:
     m_Key: loading.key3
     m_Metadata:
       m_Items: []
+  - m_Id: 12941639058010112
+    m_Key: loading.load
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

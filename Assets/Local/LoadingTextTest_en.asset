@@ -19,15 +19,22 @@ MonoBehaviour:
     m_Items: []
   m_TableData:
   - m_Id: 6440169472
-    m_Localized: hehe
+    m_Localized: "Don\u2019t forget to upgrade your equipment \u2014 even a small
+      stat bonus can change the outcome of a battle."
     m_Metadata:
       m_Items: []
   - m_Id: 68943687680
-    m_Localized: hoho
+    m_Localized: "Talk to NPCs again after completing quests \u2014 they may have
+      new dialogue and rewards."
     m_Metadata:
       m_Items: []
   - m_Id: 106449154048
-    m_Localized: haha
+    m_Localized: "Explore every corner of the world \u2014 rare items are often hidden
+      away from the main path."
+    m_Metadata:
+      m_Items: []
+  - m_Id: 12941639058010112
+    m_Localized: Loading
     m_Metadata:
       m_Items: []
   references:

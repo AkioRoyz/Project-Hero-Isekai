@@ -17,7 +17,7 @@ public class SceneTransitionManager : MonoBehaviour
 
     [Header("UI References")]
     [SerializeField] private Image backgroundImage;
-    [SerializeField] private Slider progressBar;
+    [SerializeField] private Image progressFillImage;
     [SerializeField] private TMP_Text progressText;
     [SerializeField] private TMP_Text tipText;
 
@@ -76,6 +76,7 @@ public class SceneTransitionManager : MonoBehaviour
         {
             if (showLogs)
                 Debug.LogWarning("[SceneTransitionManager] Transition already in progress.", this);
+
             return;
         }
 
@@ -144,7 +145,8 @@ public class SceneTransitionManager : MonoBehaviour
             displayedProgress = Mathf.MoveTowards(
                 displayedProgress,
                 targetProgress,
-                progressSmoothingSpeed * Time.unscaledDeltaTime);
+                progressSmoothingSpeed * Time.unscaledDeltaTime
+            );
 
             UpdateProgressUI(displayedProgress);
 
@@ -268,8 +270,8 @@ public class SceneTransitionManager : MonoBehaviour
     {
         normalizedValue = Mathf.Clamp01(normalizedValue);
 
-        if (progressBar != null)
-            progressBar.value = normalizedValue;
+        if (progressFillImage != null)
+            progressFillImage.fillAmount = normalizedValue;
 
         if (progressText != null)
             progressText.text = $"{Mathf.RoundToInt(normalizedValue * 100f)}%";
