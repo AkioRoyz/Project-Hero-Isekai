@@ -27,6 +27,10 @@ public class DialogueNodeData
     [Header("Text")]
     [SerializeField] private LocalizedString dialogueText;
 
+    [Header("Dialogue Background")]
+    [Tooltip("Ќеоб€зательный фон дл€ этой ноды диалога. ≈сли оставить пустым, DialogueUI использует стандартный фон.")]
+    [SerializeField] private Sprite dialogueBackground;
+
     [Header("Line Transition")]
     [Tooltip("—ледующий узел дл€ обычной реплики. -1 = завершить диалог.")]
     [SerializeField] private int nextNodeIndex = -1;
@@ -50,6 +54,7 @@ public class DialogueNodeData
     public Sprite SpeakerPortrait => speakerPortrait;
 
     public LocalizedString DialogueText => dialogueText;
+    public Sprite DialogueBackground => dialogueBackground;
     public int NextNodeIndex => nextNodeIndex;
 
     public IReadOnlyList<DialogueChoiceData> Choices => choices;

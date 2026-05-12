@@ -364,6 +364,7 @@ public class DialogueManager : MonoBehaviour
         string speakerName = await ResolveSpeakerName(node);
         string dialogueText = await ResolveLocalizedString(node.DialogueText);
         Sprite portrait = ResolvePortrait(node);
+        Sprite dialogueBackground = node.DialogueBackground;
 
         if (!isDialogueActive || refreshVersion != uiRefreshVersion)
             return;
@@ -422,6 +423,7 @@ public class DialogueManager : MonoBehaviour
 
         dialogueUI.SetSpeakerName(speakerName);
         dialogueUI.SetDialogueText(dialogueText);
+        dialogueUI.SetDialogueBackground(dialogueBackground);
         dialogueUI.SetPortrait(portrait);
 
         if (node.NodeType == DialogueNodeType.Choice)

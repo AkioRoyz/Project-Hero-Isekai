@@ -203,7 +203,8 @@ public class EquipmentSystem : MonoBehaviour
         statsSystem.AddBonusStats(
             item.EquipmentStrengthBonus,
             item.EquipmentManaBonus,
-            item.EquipmentDefenceBonus
+            item.EquipmentDefenceBonus,
+            item.EquipmentDexterityBonus
         );
     }
 
@@ -215,7 +216,8 @@ public class EquipmentSystem : MonoBehaviour
         statsSystem.RemoveBonusStats(
             item.EquipmentStrengthBonus,
             item.EquipmentManaBonus,
-            item.EquipmentDefenceBonus
+            item.EquipmentDefenceBonus,
+            item.EquipmentDexterityBonus
         );
     }
 }

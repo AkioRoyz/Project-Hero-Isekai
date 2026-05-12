@@ -40,6 +40,13 @@ public class DialogueUI : MonoBehaviour
     [Header("Dialogue Text UI")]
     [SerializeField] private TMP_Text dialogueText;
 
+    [Header("Dialogue Background UI")]
+    [Tooltip("Image, который рисует фон окна диалога. Лучше использовать отдельный дочерний объект позади текста/портрета/вариантов ответа.")]
+    [SerializeField] private Image backgroundImage;
+
+    [Tooltip("Стандартный фон диалога. Используется, если в текущей ноде не выбран свой фон.")]
+    [SerializeField] private Sprite defaultBackgroundSprite;
+
     [Header("Portrait UI")]
     [SerializeField] private GameObject portraitRoot;
     [SerializeField] private Image portraitImage;
@@ -145,6 +152,7 @@ public class DialogueUI : MonoBehaviour
     {
         SetSpeakerName(string.Empty);
         SetDialogueText(string.Empty);
+        SetDialogueBackground(null);
         SetPortrait(null);
         ClearChoices();
     }
@@ -164,6 +172,18 @@ public class DialogueUI : MonoBehaviour
     {
         if (dialogueText != null)
             dialogueText.text = text ?? string.Empty;
+    }
+
+    public void SetDialogueBackground(Sprite nodeBackground)
+    {
+        if (backgroundImage == null)
+            return;
+
+        Sprite finalBackground = nodeBackground != null ? nodeBackground : defaultBackgroundSprite;
+        bool hasBackground = finalBackground != null;
+
+        backgroundImage.sprite = finalBackground;
+        backgroundImage.enabled = hasBackground;
     }
 
     public void SetPortrait(Sprite portrait)

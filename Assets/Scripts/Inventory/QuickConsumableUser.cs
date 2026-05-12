@@ -183,10 +183,10 @@ public class QuickConsumableUser : MonoBehaviour
         if (statsSystem == null)
             yield break;
 
-        statsSystem.AddBonusStats(0, 0, bonusDefence);
+        statsSystem.AddBonusStats(0, 0, bonusDefence, 0);
         yield return new WaitForSeconds(duration);
 
         if (statsSystem != null)
-            statsSystem.RemoveBonusStats(0, 0, bonusDefence);
+            statsSystem.RemoveBonusStats(0, 0, bonusDefence, 0);
     }
 }

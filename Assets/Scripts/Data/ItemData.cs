@@ -22,9 +22,10 @@ public class ItemData : ScriptableObject
     [SerializeField] private float consumableDuration = 0f;
 
     [Header("Equipment Bonuses")]
-    [SerializeField] private int equipmentStrengthBonus = 0;
-    [SerializeField] private int equipmentManaBonus = 0;
-    [SerializeField] private int equipmentDefenceBonus = 0;
+    [SerializeField] private int equipmentStrengthBonus;
+    [SerializeField] private int equipmentManaBonus;
+    [SerializeField] private int equipmentDefenceBonus;
+    [SerializeField] private int equipmentDexterityBonus;
 
     [Header("Trade Settings")]
     [SerializeField] private int basePrice = 1;
@@ -44,6 +45,7 @@ public class ItemData : ScriptableObject
     public int EquipmentStrengthBonus => equipmentStrengthBonus;
     public int EquipmentManaBonus => equipmentManaBonus;
     public int EquipmentDefenceBonus => equipmentDefenceBonus;
+    public int EquipmentDexterityBonus => equipmentDexterityBonus;
     public int BasePrice => Mathf.Max(0, basePrice);
     public bool CanSellToMerchant => canSellToMerchant;
 }

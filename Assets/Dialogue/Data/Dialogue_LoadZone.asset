@@ -39,6 +39,7 @@ MonoBehaviour:
       m_FallbackState: 0
       m_WaitForCompletion: 0
       m_LocalVariables: []
+    dialogueBackground: {fileID: 21300000, guid: 992e647a84296ee4280a74fb9c0e5625, type: 3}
     nextNodeIndex: 1
     choices: []
     conditions: []
@@ -66,6 +67,7 @@ MonoBehaviour:
       m_FallbackState: 0
       m_WaitForCompletion: 0
       m_LocalVariables: []
+    dialogueBackground: {fileID: 0}
     nextNodeIndex: -1
     choices: []
     conditions: []
