@@ -39,6 +39,7 @@ MonoBehaviour:
       m_FallbackState: 0
       m_WaitForCompletion: 0
       m_LocalVariables: []
+    dialogueBackground: {fileID: 0}
     nextNodeIndex: -1
     choices:
     - inspectorChoiceTitle: 

@@ -45,7 +45,6 @@ public class PinnedQuestRowUI : MonoBehaviour
         if (questTasksText != null)
         {
             questTasksText.text = tasksText ?? string.Empty;
-            questTasksText.color = questColor;
         }
     }
 }

@@ -505,6 +505,31 @@ public class DialogueToolsWindow : EditorWindow
         }
     }
 
+    private void DrawSpritePreview(SerializedProperty spriteProperty, string emptyMessage, float height)
+    {
+        if (spriteProperty == null)
+            return;
+
+        Sprite sprite = spriteProperty.objectReferenceValue as Sprite;
+        Rect previewRect = GUILayoutUtility.GetRect(160f, height, GUILayout.ExpandWidth(true));
+        GUI.Box(previewRect, GUIContent.none);
+
+        if (sprite == null)
+        {
+            EditorGUI.LabelField(previewRect, emptyMessage, EditorStyles.centeredGreyMiniLabel);
+            return;
+        }
+
+        Texture previewTexture = AssetPreview.GetAssetPreview(sprite);
+        if (previewTexture == null)
+            previewTexture = AssetPreview.GetMiniThumbnail(sprite);
+
+        if (previewTexture != null)
+            GUI.DrawTexture(previewRect, previewTexture, ScaleMode.ScaleToFit);
+        else
+            EditorGUI.LabelField(previewRect, sprite.name, EditorStyles.centeredGreyMiniLabel);
+    }
+
     private void DrawSpeakerPreviewColumn()
     {
         if (selectedSpeaker == null)
@@ -648,6 +673,7 @@ public class DialogueToolsWindow : EditorWindow
         SerializedProperty customSpeakerNameProp = nodeProp.FindPropertyRelative("customSpeakerName");
         SerializedProperty speakerPortraitProp = nodeProp.FindPropertyRelative("speakerPortrait");
         SerializedProperty dialogueTextProp = nodeProp.FindPropertyRelative("dialogueText");
+        SerializedProperty dialogueBackgroundProp = nodeProp.FindPropertyRelative("dialogueBackground");
         SerializedProperty nextNodeIndexProp = nodeProp.FindPropertyRelative("nextNodeIndex");
         SerializedProperty choicesProp = nodeProp.FindPropertyRelative("choices");
         SerializedProperty conditionsProp = nodeProp.FindPropertyRelative("conditions");
@@ -681,6 +707,17 @@ public class DialogueToolsWindow : EditorWindow
 
         if (dialogueTextProp != null)
             EditorGUILayout.PropertyField(dialogueTextProp, new GUIContent("Dialogue Text"), true);
+
+        if (dialogueBackgroundProp != null)
+        {
+            EditorGUILayout.Space(4f);
+            EditorGUILayout.PropertyField(dialogueBackgroundProp, new GUIContent("Dialogue Background"));
+            DrawSpritePreview(dialogueBackgroundProp, "No custom background. DialogueUI will use the default background sprite.", 96f);
+        }
+        else
+        {
+            EditorGUILayout.HelpBox("Dialogue Background field was not found. Replace DialogueNodeData.cs with the updated version that contains the dialogueBackground Sprite field.", MessageType.Warning);
+        }
 
         EditorGUILayout.Space(8f);
 
@@ -1097,14 +1134,21 @@ public class DialogueToolsWindow : EditorWindow
         if (node.NodeType == DialogueNodeType.Line)
         {
             if (node.NextNodeIndex < 0)
-                return "Ends dialogue";
+                return AppendBackgroundInfo("Ends dialogue", node);
 
             bool valid = node.NextNodeIndex < totalNodeCount;
-            return valid ? "Next -> " + node.NextNodeIndex : "Next -> INVALID";
+            string linkInfo = valid ? "Next -> " + node.NextNodeIndex : "Next -> INVALID";
+            return AppendBackgroundInfo(linkInfo, node);
         }
 
         int choiceCount = node.Choices != null ? node.Choices.Count : 0;
-        return "Choices: " + choiceCount;
+        return AppendBackgroundInfo("Choices: " + choiceCount, node);
+    }
+
+    private string AppendBackgroundInfo(string baseInfo, DialogueNodeData node)
+    {
+        Sprite background = GetFieldValue<Sprite>(node, "dialogueBackground");
+        return background != null ? baseInfo + " | BG" : baseInfo;
     }
 
     private string GetDialogueSubLabel(DialogueData dialogue)

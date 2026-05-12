@@ -13,6 +13,7 @@ public class DialogueNodeDataDrawer : PropertyDrawer
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
         SerializedProperty titleProperty = property.FindPropertyRelative("inspectorNodeTitle");
+        SerializedProperty backgroundProperty = property.FindPropertyRelative("dialogueBackground");
 
         string title = "Node";
         if (titleProperty != null && !string.IsNullOrWhiteSpace(titleProperty.stringValue))
@@ -20,7 +21,8 @@ public class DialogueNodeDataDrawer : PropertyDrawer
             title = titleProperty.stringValue;
         }
 
-        string displayLabel = $"{title} [{GetArrayIndex(property)}]";
+        string backgroundSuffix = backgroundProperty != null && backgroundProperty.objectReferenceValue != null ? "  • BG" : string.Empty;
+        string displayLabel = $"{title} [{GetArrayIndex(property)}]{backgroundSuffix}";
         EditorGUI.PropertyField(position, property, new GUIContent(displayLabel), true);
     }
 

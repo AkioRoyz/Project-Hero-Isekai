@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: 0ef86c359558cbc4184c8118ab72a20a
+guid: 3ed8286bfcf5d8141883f93ece3d8e0b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6400955019401206452
-    second: UI_box_bg_0
+      213: 652843735047154500
+    second: quest_marker_border_0
+  - first:
+      213: -4209818070651103491
+    second: quest_marker_border_1
+  - first:
+      213: -4644070281269179401
+    second: quest_marker_border_2
+  - first:
+      213: 3022516912019617612
+    second: quest_marker_border_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -52,7 +61,7 @@ TextureImporter:
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
-  spriteBorder: {x: 21, y: 20, z: 21, w: 22}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -113,23 +122,89 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: UI_box_bg_0
+      name: quest_marker_border_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 152
-        height: 156
+        x: 19
+        y: 53
+        width: 27
+        height: 12
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c456655d25d3b27a0800000000000000
-      internalID: -6400955019401206452
+      spriteID: 44b23590bed5f0900800000000000000
+      internalID: 652843735047154500
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: quest_marker_border_1
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 19
+        width: 12
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df612d1f4c8b395c0800000000000000
+      internalID: -4209818070651103491
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: quest_marker_border_2
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 19
+        width: 12
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7fb800d3fa2fc8fb0800000000000000
+      internalID: -4644070281269179401
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: quest_marker_border_3
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 0
+        width: 27
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c473a841e1322f920800000000000000
+      internalID: 3022516912019617612
       vertices: []
       indices: 
       edges: []
@@ -139,7 +214,7 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
-    internalID: 1537655665
+    internalID: 0
     vertices: []
     indices: 
     edges: []
@@ -148,7 +223,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      UI_box_bg_0: -6400955019401206452
+      quest_marker_border_0: 652843735047154500
+      quest_marker_border_1: -4209818070651103491
+      quest_marker_border_2: -4644070281269179401
+      quest_marker_border_3: 3022516912019617612
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

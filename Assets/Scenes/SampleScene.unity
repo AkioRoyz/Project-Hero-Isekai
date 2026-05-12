@@ -2268,11 +2268,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::QuestMarkerDisplayUI
   root: {fileID: 1818558167}
   markerImage: {fileID: 1818558172}
-  availableSprite: {fileID: 4895791756711242892, guid: c4c69a55646993c4d9fb51aeb898164b, type: 3}
-  inProgressSprite: {fileID: 6517347705327196863, guid: c4c69a55646993c4d9fb51aeb898164b, type: 3}
-  readyToTurnInSprite: {fileID: 3714128071727186979, guid: c4c69a55646993c4d9fb51aeb898164b, type: 3}
-  mainQuestColor: {r: 1, g: 0.6213406, b: 0.015686274, a: 1}
-  sideQuestColor: {r: 0.6476979, g: 0, b: 1, a: 1}
+  availableSprite: {fileID: 21300000, guid: 5b8c3e8f7a2e9864a911a48468538ef7, type: 3}
+  inProgressSprite: {fileID: 21300000, guid: dd5d9881dc53f424b8c9148aaade8d59, type: 3}
+  readyToTurnInSprite: {fileID: 21300000, guid: c9b345e9163f65c469b1f07f74af01fe, type: 3}
+  mainQuestColor: {r: 0.972549, g: 0.043137256, b: 0.6039216, a: 1}
+  sideQuestColor: {r: 0.67058825, g: 0.87058824, b: 0.12156863, a: 1}
 --- !u!1 &1611641766
 GameObject:
   m_ObjectHideFlags: 0

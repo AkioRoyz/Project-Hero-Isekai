@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 0ef86c359558cbc4184c8118ab72a20a
+guid: c9b345e9163f65c469b1f07f74af01fe
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -6400955019401206452
-    second: UI_box_bg_0
+      213: 3278887062977791321
+    second: quest_end_icon_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -52,7 +52,7 @@ TextureImporter:
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
-  spriteBorder: {x: 21, y: 20, z: 21, w: 22}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -113,23 +113,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: UI_box_bg_0
+      name: quest_end_icon_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 152
-        height: 156
+        x: 19
+        y: 19
+        width: 28
+        height: 27
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c456655d25d3b27a0800000000000000
-      internalID: -6400955019401206452
+      spriteID: 9554a675962f08d20800000000000000
+      internalID: 3278887062977791321
       vertices: []
       indices: 
       edges: []
@@ -139,7 +139,7 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
-    internalID: 1537655665
+    internalID: 0
     vertices: []
     indices: 
     edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      UI_box_bg_0: -6400955019401206452
+      quest_end_icon_0: 3278887062977791321
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

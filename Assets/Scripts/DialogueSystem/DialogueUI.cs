@@ -22,6 +22,41 @@ public class DialogueUI : MonoBehaviour
         }
     }
 
+    [System.Serializable]
+    public class ChoiceSlot
+    {
+        [Header("Root")]
+        [Tooltip("Корневой объект варианта ответа. Включается, когда этот вариант должен отображаться.")]
+        public GameObject root;
+
+        [Header("Text")]
+        [Tooltip("Текст варианта ответа.")]
+        public TMP_Text choiceText;
+
+        [Header("Backgrounds")]
+        [Tooltip("Фон обычного / невыбранного состояния.")]
+        public Image unselectedBackgroundImage;
+
+        [Tooltip("Фон выбранного состояния.")]
+        public Image selectedBackgroundImage;
+
+        [Header("Quest Marker")]
+        [Tooltip("Image иконки квеста. Будет включаться только если у варианта ответа включён Show Quest Marker.")]
+        public Image questMarkerImage;
+
+        [Header("Custom Colors")]
+        [Tooltip("Если включено, этот слот будет использовать свои цвета вместо общих цветов DialogueUI.")]
+        public bool useCustomColors;
+
+        public Color unselectedTextColor = Color.white;
+        public Color selectedTextColor = Color.white;
+        public Color disabledTextColor = Color.gray;
+
+        public Color unselectedQuestMarkerColor = Color.white;
+        public Color selectedQuestMarkerColor = Color.white;
+        public Color disabledQuestMarkerColor = Color.gray;
+    }
+
     [Header("Root")]
     [SerializeField] private GameObject root;
 
@@ -51,23 +86,28 @@ public class DialogueUI : MonoBehaviour
     [SerializeField] private GameObject portraitRoot;
     [SerializeField] private Image portraitImage;
 
-    [Header("Choices")]
-    [SerializeField] private List<TMP_Text> choiceTexts = new();
+    [Header("Choice Slots")]
+    [Tooltip("Слоты вариантов ответа. Каждый слот — это корневой объект ответа + текст + фон выбранного/невыбранного состояния + иконка квеста.")]
+    [SerializeField] private List<ChoiceSlot> choiceSlots = new();
 
-    [Tooltip("Необязательные объекты-иконки для тех же строк выбора. Порядок должен совпадать с choiceTexts.")]
-    [SerializeField] private List<GameObject> choiceQuestMarkerObjects = new();
+    [Header("Default Choice Colors")]
+    [Tooltip("Цвет текста невыбранного варианта ответа.")]
+    [SerializeField] private Color unselectedChoiceTextColor = Color.white;
 
-    [Header("Selection Prefixes")]
-    [SerializeField] private string selectedPrefix = "> ";
-    [SerializeField] private string unselectedPrefix = "  ";
-    [SerializeField] private string disabledPrefix = "X ";
+    [Tooltip("Цвет текста выбранного варианта ответа.")]
+    [SerializeField] private Color selectedChoiceTextColor = Color.white;
 
-    [Header("Choice Colors")]
-    [SerializeField] private bool tintDisabledChoices = true;
-    [SerializeField] private bool tintQuestChoices = true;
-    [SerializeField] private Color normalChoiceColor = Color.white;
-    [SerializeField] private Color disabledChoiceColor = Color.gray;
-    [SerializeField] private Color questChoiceColor = new Color(1f, 0.85f, 0.2f, 1f);
+    [Tooltip("Цвет текста недоступного варианта ответа.")]
+    [SerializeField] private Color disabledChoiceTextColor = Color.gray;
+
+    [Tooltip("Цвет иконки квеста у невыбранного варианта ответа.")]
+    [SerializeField] private Color unselectedQuestMarkerColor = Color.white;
+
+    [Tooltip("Цвет иконки квеста у выбранного варианта ответа.")]
+    [SerializeField] private Color selectedQuestMarkerColor = Color.white;
+
+    [Tooltip("Цвет иконки квеста у недоступного варианта ответа.")]
+    [SerializeField] private Color disabledQuestMarkerColor = Color.gray;
 
     [Header("Continue Indicator")]
     [Tooltip("Иконка, которая показывается только на обычных репликах без выбора.")]
@@ -204,19 +244,9 @@ public class DialogueUI : MonoBehaviour
 
     public void ClearChoices()
     {
-        for (int i = 0; i < choiceTexts.Count; i++)
+        for (int i = 0; i < choiceSlots.Count; i++)
         {
-            if (choiceTexts[i] != null)
-            {
-                choiceTexts[i].gameObject.SetActive(false);
-                choiceTexts[i].text = string.Empty;
-                choiceTexts[i].color = normalChoiceColor;
-            }
-
-            if (i < choiceQuestMarkerObjects.Count && choiceQuestMarkerObjects[i] != null)
-            {
-                choiceQuestMarkerObjects[i].SetActive(false);
-            }
+            ClearChoiceSlot(choiceSlots[i]);
         }
     }
 
@@ -227,38 +257,25 @@ public class DialogueUI : MonoBehaviour
         if (choices == null)
             return;
 
-        for (int i = 0; i < choiceTexts.Count; i++)
+        int count = Mathf.Min(choiceSlots.Count, choices.Count);
+
+        for (int i = 0; i < count; i++)
         {
-            if (i >= choices.Count)
-                break;
+            ChoiceSlot slot = choiceSlots[i];
 
-            TMP_Text choiceText = choiceTexts[i];
-            if (choiceText == null)
+            if (slot == null)
                 continue;
-
-            choiceText.gameObject.SetActive(true);
 
             ChoiceViewData data = choices[i];
 
-            bool isSelected = i == selectedIndex;
-            string prefix;
+            bool isSelected = data.IsSelectable && i == selectedIndex;
+            bool isDisabled = !data.IsSelectable;
 
-            if (!data.IsSelectable)
-            {
-                prefix = disabledPrefix;
-            }
-            else
-            {
-                prefix = isSelected ? selectedPrefix : unselectedPrefix;
-            }
-
-            choiceText.text = prefix + (data.Text ?? string.Empty);
-            choiceText.color = GetChoiceColor(data);
-
-            if (i < choiceQuestMarkerObjects.Count && choiceQuestMarkerObjects[i] != null)
-            {
-                choiceQuestMarkerObjects[i].SetActive(data.ShowQuestMarker);
-            }
+            SetChoiceSlotVisible(slot, true);
+            SetChoiceText(slot, data.Text);
+            SetChoiceBackground(slot, isSelected);
+            SetChoiceTextColor(slot, isSelected, isDisabled);
+            SetQuestMarker(slot, data.ShowQuestMarker, isSelected, isDisabled);
         }
     }
 
@@ -286,18 +303,149 @@ public class DialogueUI : MonoBehaviour
         ResetContinueIndicatorPosition();
     }
 
-    private Color GetChoiceColor(ChoiceViewData data)
+    private void ClearChoiceSlot(ChoiceSlot slot)
     {
-        if (data == null)
-            return normalChoiceColor;
+        if (slot == null)
+            return;
 
-        if (!data.IsSelectable && tintDisabledChoices)
-            return disabledChoiceColor;
+        SetChoiceSlotVisible(slot, false);
 
-        if (data.IsQuestRelated && tintQuestChoices)
-            return questChoiceColor;
+        if (slot.choiceText != null)
+        {
+            slot.choiceText.text = string.Empty;
+            slot.choiceText.color = GetUnselectedTextColor(slot);
+        }
 
-        return normalChoiceColor;
+        SetImageObjectActive(slot.unselectedBackgroundImage, false);
+        SetImageObjectActive(slot.selectedBackgroundImage, false);
+        SetImageObjectActive(slot.questMarkerImage, false);
+    }
+
+    private void SetChoiceSlotVisible(ChoiceSlot slot, bool isVisible)
+    {
+        if (slot == null)
+            return;
+
+        if (slot.root != null)
+        {
+            slot.root.SetActive(isVisible);
+            return;
+        }
+
+        if (slot.choiceText != null)
+        {
+            slot.choiceText.gameObject.SetActive(isVisible);
+        }
+    }
+
+    private void SetChoiceText(ChoiceSlot slot, string text)
+    {
+        if (slot == null || slot.choiceText == null)
+            return;
+
+        slot.choiceText.text = text ?? string.Empty;
+    }
+
+    private void SetChoiceBackground(ChoiceSlot slot, bool isSelected)
+    {
+        if (slot == null)
+            return;
+
+        SetImageObjectActive(slot.unselectedBackgroundImage, !isSelected);
+        SetImageObjectActive(slot.selectedBackgroundImage, isSelected);
+    }
+
+    private void SetChoiceTextColor(ChoiceSlot slot, bool isSelected, bool isDisabled)
+    {
+        if (slot == null || slot.choiceText == null)
+            return;
+
+        if (isDisabled)
+        {
+            slot.choiceText.color = GetDisabledTextColor(slot);
+            return;
+        }
+
+        slot.choiceText.color = isSelected
+            ? GetSelectedTextColor(slot)
+            : GetUnselectedTextColor(slot);
+    }
+
+    private void SetQuestMarker(ChoiceSlot slot, bool showQuestMarker, bool isSelected, bool isDisabled)
+    {
+        if (slot == null || slot.questMarkerImage == null)
+            return;
+
+        SetImageObjectActive(slot.questMarkerImage, showQuestMarker);
+
+        if (!showQuestMarker)
+            return;
+
+        if (isDisabled)
+        {
+            slot.questMarkerImage.color = GetDisabledQuestMarkerColor(slot);
+            return;
+        }
+
+        slot.questMarkerImage.color = isSelected
+            ? GetSelectedQuestMarkerColor(slot)
+            : GetUnselectedQuestMarkerColor(slot);
+    }
+
+    private void SetImageObjectActive(Image image, bool isActive)
+    {
+        if (image == null)
+            return;
+
+        image.gameObject.SetActive(isActive);
+    }
+
+    private Color GetUnselectedTextColor(ChoiceSlot slot)
+    {
+        if (slot != null && slot.useCustomColors)
+            return slot.unselectedTextColor;
+
+        return unselectedChoiceTextColor;
+    }
+
+    private Color GetSelectedTextColor(ChoiceSlot slot)
+    {
+        if (slot != null && slot.useCustomColors)
+            return slot.selectedTextColor;
+
+        return selectedChoiceTextColor;
+    }
+
+    private Color GetDisabledTextColor(ChoiceSlot slot)
+    {
+        if (slot != null && slot.useCustomColors)
+            return slot.disabledTextColor;
+
+        return disabledChoiceTextColor;
+    }
+
+    private Color GetUnselectedQuestMarkerColor(ChoiceSlot slot)
+    {
+        if (slot != null && slot.useCustomColors)
+            return slot.unselectedQuestMarkerColor;
+
+        return unselectedQuestMarkerColor;
+    }
+
+    private Color GetSelectedQuestMarkerColor(ChoiceSlot slot)
+    {
+        if (slot != null && slot.useCustomColors)
+            return slot.selectedQuestMarkerColor;
+
+        return selectedQuestMarkerColor;
+    }
+
+    private Color GetDisabledQuestMarkerColor(ChoiceSlot slot)
+    {
+        if (slot != null && slot.useCustomColors)
+            return slot.disabledQuestMarkerColor;
+
+        return disabledQuestMarkerColor;
     }
 
     private void UpdateContinueIndicatorAnimation()
