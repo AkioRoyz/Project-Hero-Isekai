@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemId: health_potion
   itemType: 0
-  icon: {fileID: 21300000, guid: 9036a782b3fb9034cb1ed8f04097cdf5, type: 3}
+  icon: {fileID: 21300000, guid: d863ee2c94e59c2448bd2c48a865a5d8, type: 3}
   itemName:
     m_TableReference:
       m_TableCollectionName: GUID:94ae6c3021d907241a36c7f3ee57da88
@@ -40,6 +40,7 @@ MonoBehaviour:
   equipmentStrengthBonus: 0
   equipmentManaBonus: 0
   equipmentDefenceBonus: 0
+  equipmentDexterityBonus: 0
   basePrice: 10
   canSellToMerchant: 1
   references:

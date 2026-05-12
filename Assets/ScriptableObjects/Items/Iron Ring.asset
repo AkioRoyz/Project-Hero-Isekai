@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemData
   itemId: iron_ring
   itemType: 2
-  icon: {fileID: 5522397121026081838, guid: e996ba67be65d554eade9414f50f3e4e, type: 3}
+  icon: {fileID: 21300000, guid: d379be8eda358394a83fae802456dfcc, type: 3}
   itemName:
     m_TableReference:
       m_TableCollectionName: GUID:94ae6c3021d907241a36c7f3ee57da88
@@ -40,6 +40,7 @@ MonoBehaviour:
   equipmentStrengthBonus: 2
   equipmentManaBonus: 1
   equipmentDefenceBonus: 1
+  equipmentDexterityBonus: 0
   basePrice: 50
   canSellToMerchant: 1
   references:
