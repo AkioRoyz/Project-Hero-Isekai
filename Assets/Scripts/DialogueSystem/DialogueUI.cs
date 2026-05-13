@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -79,6 +80,22 @@ public class DialogueUI : MonoBehaviour
     [Header("Dialogue Text UI")]
     [SerializeField] private TMP_Text dialogueText;
 
+    [Header("Text Appearance Animation")]
+    [Tooltip("Анимировать основной текст диалога.")]
+    [SerializeField] private bool animateDialogueText = true;
+
+    [Tooltip("Анимировать тексты вариантов ответа.")]
+    [SerializeField] private bool animateChoiceTexts = true;
+
+    [Tooltip("Задержка между появлением символов в основном тексте диалога.")]
+    [SerializeField, Min(0f)] private float dialogueCharacterDelay = 0.025f;
+
+    [Tooltip("Задержка между появлением символов в вариантах ответа.")]
+    [SerializeField, Min(0f)] private float choiceCharacterDelay = 0.015f;
+
+    [Tooltip("Небольшая задержка между стартом анимации разных вариантов ответа.")]
+    [SerializeField, Min(0f)] private float choiceSlotStartDelay = 0.06f;
+
     [Header("Dialogue Background UI")]
     [Tooltip("Image, который рисует фон окна диалога. Лучше использовать отдельный дочерний объект позади текста/портрета/вариантов ответа.")]
     [SerializeField] private Image backgroundImage;
@@ -130,6 +147,14 @@ public class DialogueUI : MonoBehaviour
     private bool pauseVisualEffectEnabled;
     private Vector2 continueIndicatorStartAnchoredPosition;
 
+    private string currentDialogueText = string.Empty;
+    private Coroutine dialogueTextAnimationCoroutine;
+
+    private readonly List<Coroutine> choiceTextAnimationCoroutines = new();
+    private readonly List<string> cachedChoiceTexts = new();
+
+    public bool IsDialogueTextAnimating => dialogueTextAnimationCoroutine != null;
+
     private void Awake()
     {
         ResolvePauseVisualEffect();
@@ -147,6 +172,8 @@ public class DialogueUI : MonoBehaviour
 
     private void OnDisable()
     {
+        StopDialogueTextAnimation(false);
+        StopChoiceTextAnimations();
         DisablePauseVisualEffect();
     }
 
@@ -226,8 +253,29 @@ public class DialogueUI : MonoBehaviour
 
     public void SetDialogueText(string text)
     {
-        if (dialogueText != null)
-            dialogueText.text = text ?? string.Empty;
+        currentDialogueText = text ?? string.Empty;
+
+        StopDialogueTextAnimation(false);
+
+        if (dialogueText == null)
+            return;
+
+        if (!animateDialogueText || string.IsNullOrEmpty(currentDialogueText))
+        {
+            SetTextInstant(dialogueText, currentDialogueText);
+            return;
+        }
+
+        dialogueText.text = currentDialogueText;
+        dialogueText.maxVisibleCharacters = 0;
+
+        dialogueTextAnimationCoroutine = StartCoroutine(PlayDialogueTextReveal());
+    }
+
+    public void CompleteDialogueTextAnimation()
+    {
+        StopDialogueTextAnimation(false);
+        SetTextInstant(dialogueText, currentDialogueText);
     }
 
     public void SetDialogueBackground(Sprite nodeBackground)
@@ -260,20 +308,24 @@ public class DialogueUI : MonoBehaviour
 
     public void ClearChoices()
     {
-        for (int i = 0; i < choiceSlots.Count; i++)
-        {
-            ClearChoiceSlot(choiceSlots[i]);
-        }
+        StopChoiceTextAnimations();
+        cachedChoiceTexts.Clear();
+        ClearChoiceSlotsVisualOnly();
     }
 
     public void SetChoices(List<ChoiceViewData> choices, int selectedIndex)
     {
-        ClearChoices();
-
         if (choices == null)
+        {
+            ClearChoices();
             return;
+        }
 
         int count = Mathf.Min(choiceSlots.Count, choices.Count);
+        bool shouldAnimateChoiceTexts = animateChoiceTexts && HaveChoiceTextsChanged(choices, count);
+
+        StopChoiceTextAnimations();
+        ClearChoiceSlotsVisualOnly();
 
         for (int i = 0; i < count; i++)
         {
@@ -288,11 +340,22 @@ public class DialogueUI : MonoBehaviour
             bool isDisabled = !data.IsSelectable;
 
             SetChoiceSlotVisible(slot, true);
-            SetChoiceText(slot, data.Text);
+
+            if (shouldAnimateChoiceTexts)
+            {
+                SetChoiceTextAnimated(slot, data.Text, i * choiceSlotStartDelay);
+            }
+            else
+            {
+                SetTextInstant(slot.choiceText, data.Text);
+            }
+
             SetChoiceBackground(slot, isSelected);
             SetChoiceTextColor(slot, isSelected, isDisabled);
             SetQuestMarker(slot, data.ShowQuestMarker, isSelected, isDisabled);
         }
+
+        CacheChoiceTexts(choices, count);
     }
 
     public void ShowContinueIndicator()
@@ -317,6 +380,172 @@ public class DialogueUI : MonoBehaviour
         }
 
         ResetContinueIndicatorPosition();
+    }
+
+    private IEnumerator PlayDialogueTextReveal()
+    {
+        yield return PlayTextReveal(dialogueText, currentDialogueText, 0f, dialogueCharacterDelay);
+        dialogueTextAnimationCoroutine = null;
+    }
+
+    private void SetChoiceTextAnimated(ChoiceSlot slot, string text, float startDelay)
+    {
+        if (slot == null || slot.choiceText == null)
+            return;
+
+        string finalText = text ?? string.Empty;
+
+        slot.choiceText.text = finalText;
+        slot.choiceText.maxVisibleCharacters = 0;
+
+        Coroutine coroutine = StartCoroutine(PlayTextReveal(slot.choiceText, finalText, startDelay, choiceCharacterDelay));
+        choiceTextAnimationCoroutines.Add(coroutine);
+    }
+
+    private IEnumerator PlayTextReveal(TMP_Text targetText, string text, float startDelay, float characterDelay)
+    {
+        if (targetText == null)
+            yield break;
+
+        string finalText = text ?? string.Empty;
+
+        targetText.text = finalText;
+        targetText.maxVisibleCharacters = 0;
+
+        if (string.IsNullOrEmpty(finalText))
+        {
+            SetTextInstant(targetText, finalText);
+            yield break;
+        }
+
+        while (targetText != null && !targetText.gameObject.activeInHierarchy)
+        {
+            yield return null;
+        }
+
+        if (targetText == null)
+            yield break;
+
+        if (startDelay > 0f)
+        {
+            yield return WaitUnscaledSeconds(startDelay);
+        }
+
+        while (targetText != null && !targetText.gameObject.activeInHierarchy)
+        {
+            yield return null;
+        }
+
+        if (targetText == null)
+            yield break;
+
+        Canvas.ForceUpdateCanvases();
+        targetText.ForceMeshUpdate(true, true);
+
+        int characterCount = targetText.textInfo.characterCount;
+
+        if (characterCount <= 0)
+        {
+            characterCount = finalText.Length;
+        }
+
+        targetText.maxVisibleCharacters = 0;
+
+        for (int visibleCharacters = 1; visibleCharacters <= characterCount; visibleCharacters++)
+        {
+            if (targetText == null)
+                yield break;
+
+            targetText.maxVisibleCharacters = visibleCharacters;
+
+            if (characterDelay > 0f)
+            {
+                yield return WaitUnscaledSeconds(characterDelay);
+            }
+            else
+            {
+                yield return null;
+            }
+        }
+
+        if (targetText != null)
+        {
+            targetText.maxVisibleCharacters = int.MaxValue;
+        }
+    }
+
+    private IEnumerator WaitUnscaledSeconds(float duration)
+    {
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+    }
+
+    private void SetTextInstant(TMP_Text targetText, string text)
+    {
+        if (targetText == null)
+            return;
+
+        targetText.text = text ?? string.Empty;
+        targetText.maxVisibleCharacters = int.MaxValue;
+    }
+
+    private void StopDialogueTextAnimation(bool showInstantly)
+    {
+        if (dialogueTextAnimationCoroutine != null)
+        {
+            StopCoroutine(dialogueTextAnimationCoroutine);
+            dialogueTextAnimationCoroutine = null;
+        }
+
+        if (showInstantly)
+        {
+            SetTextInstant(dialogueText, currentDialogueText);
+        }
+    }
+
+    private void StopChoiceTextAnimations()
+    {
+        for (int i = 0; i < choiceTextAnimationCoroutines.Count; i++)
+        {
+            if (choiceTextAnimationCoroutines[i] != null)
+            {
+                StopCoroutine(choiceTextAnimationCoroutines[i]);
+            }
+        }
+
+        choiceTextAnimationCoroutines.Clear();
+    }
+
+    private bool HaveChoiceTextsChanged(List<ChoiceViewData> choices, int count)
+    {
+        if (cachedChoiceTexts.Count != count)
+            return true;
+
+        for (int i = 0; i < count; i++)
+        {
+            string newText = choices[i] != null ? choices[i].Text ?? string.Empty : string.Empty;
+
+            if (cachedChoiceTexts[i] != newText)
+                return true;
+        }
+
+        return false;
+    }
+
+    private void CacheChoiceTexts(List<ChoiceViewData> choices, int count)
+    {
+        cachedChoiceTexts.Clear();
+
+        for (int i = 0; i < count; i++)
+        {
+            string text = choices[i] != null ? choices[i].Text ?? string.Empty : string.Empty;
+            cachedChoiceTexts.Add(text);
+        }
     }
 
     private void ResolvePauseVisualEffect()
@@ -357,6 +586,14 @@ public class DialogueUI : MonoBehaviour
         pauseVisualEffectEnabled = false;
     }
 
+    private void ClearChoiceSlotsVisualOnly()
+    {
+        for (int i = 0; i < choiceSlots.Count; i++)
+        {
+            ClearChoiceSlot(choiceSlots[i]);
+        }
+    }
+
     private void ClearChoiceSlot(ChoiceSlot slot)
     {
         if (slot == null)
@@ -366,7 +603,7 @@ public class DialogueUI : MonoBehaviour
 
         if (slot.choiceText != null)
         {
-            slot.choiceText.text = string.Empty;
+            SetTextInstant(slot.choiceText, string.Empty);
             slot.choiceText.color = GetUnselectedTextColor(slot);
         }
 
@@ -390,14 +627,6 @@ public class DialogueUI : MonoBehaviour
         {
             slot.choiceText.gameObject.SetActive(isVisible);
         }
-    }
-
-    private void SetChoiceText(ChoiceSlot slot, string text)
-    {
-        if (slot == null || slot.choiceText == null)
-            return;
-
-        slot.choiceText.text = text ?? string.Empty;
     }
 
     private void SetChoiceBackground(ChoiceSlot slot, bool isSelected)

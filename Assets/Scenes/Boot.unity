@@ -18163,9 +18163,23 @@ MonoBehaviour:
     m_WaitForCompletion: 0
     m_LocalVariables: []
   delayBeforeShow: 1
-  fadeInDuration: 0.35
-  visibleDuration: 2.25
-  fadeOutDuration: 0.35
+  fadeInDuration: 0.5
+  visibleDuration: 2.7
+  fadeOutDuration: 0.5
+  headerBlink:
+    enabled: 1
+    delay: 0.05
+    duration: 0.75
+    blinkCount: 3
+    minAlpha: 0
+    maxAlpha: 1
+  questTitleBlink:
+    enabled: 1
+    delay: 0.2
+    duration: 0.75
+    blinkCount: 3
+    minAlpha: 0
+    maxAlpha: 1
   references:
     version: 2
     RefIds: []
@@ -30441,6 +30455,11 @@ MonoBehaviour:
   speakerNameRoot: {fileID: 1101812531}
   speakerNameText: {fileID: 1101812534}
   dialogueText: {fileID: 342311453}
+  animateDialogueText: 1
+  animateChoiceTexts: 0
+  dialogueCharacterDelay: 0.035
+  choiceCharacterDelay: 0.015
+  choiceSlotStartDelay: 0.06
   backgroundImage: {fileID: 435965944}
   defaultBackgroundSprite: {fileID: 21300000, guid: 293778e314fc02a4a90de695079e8b56, type: 3}
   portraitRoot: {fileID: 1309505203}
@@ -33848,7 +33867,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.78431374}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.8627451}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -36929,7 +36948,7 @@ MonoBehaviour:
   m_text: New Text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 14acbcc4e5a13ea48b91bed4737152a5, type: 2}
-  m_sharedMaterial: {fileID: 6442169708591753894, guid: 14acbcc4e5a13ea48b91bed4737152a5, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 0194c30fedb268b41859d0d0a703b80f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -47460,7 +47479,7 @@ MonoBehaviour:
   m_text: New Text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 165810d642c528649bdfa42463268dd3, type: 2}
-  m_sharedMaterial: {fileID: 7500978454708564724, guid: 165810d642c528649bdfa42463268dd3, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: a74af0d5a4ac2cb4aa8fea7686c81884, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -55855,7 +55874,7 @@ MonoBehaviour:
   m_text: SYSTEM EVENT
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 14acbcc4e5a13ea48b91bed4737152a5, type: 2}
-  m_sharedMaterial: {fileID: 6442169708591753894, guid: 14acbcc4e5a13ea48b91bed4737152a5, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 0194c30fedb268b41859d0d0a703b80f, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -59324,9 +59343,9 @@ RectTransform:
   m_Children:
   - {fileID: 101146254}
   - {fileID: 323801465}
-  - {fileID: 572815874}
   - {fileID: 1113452340}
   - {fileID: 1857598853}
+  - {fileID: 572815874}
   m_Father: {fileID: 288330088}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}

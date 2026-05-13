@@ -122,7 +122,7 @@ MonoBehaviour:
       onSelectActions: []
     - inspectorChoiceTitle: Report First Wolf Kill
       isQuestRelated: 1
-      showQuestMarker: 0
+      showQuestMarker: 1
       choiceText:
         m_TableReference:
           m_TableCollectionName: GUID:b7fa0654d63a80c4ba9b0d68ecd122a6
@@ -167,7 +167,7 @@ MonoBehaviour:
         questObjectiveAmount: 1
     - inspectorChoiceTitle: Complete Quest
       isQuestRelated: 1
-      showQuestMarker: 0
+      showQuestMarker: 1
       choiceText:
         m_TableReference:
           m_TableCollectionName: GUID:b7fa0654d63a80c4ba9b0d68ecd122a6
