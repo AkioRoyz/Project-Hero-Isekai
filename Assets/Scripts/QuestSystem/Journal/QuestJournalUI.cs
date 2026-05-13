@@ -16,6 +16,10 @@ public class QuestJournalUI : MonoBehaviour
     [Header("Root")]
     [SerializeField] private GameObject root;
 
+    [Header("Pause Visual Effect")]
+    [SerializeField] private PauseMenuBlackAndWhiteEffect blackAndWhiteEffect;
+    [SerializeField] private bool usePauseVisualEffect = true;
+
     [Header("Lists")]
     [SerializeField] private QuestJournalListUI activeQuestListUI;
     [SerializeField] private QuestJournalListUI completedQuestListUI;
@@ -66,11 +70,13 @@ public class QuestJournalUI : MonoBehaviour
 
     private List<QuestJournalListUI.EntryViewData> cachedActiveEntries = new();
     private List<QuestJournalListUI.EntryViewData> cachedCompletedEntries = new();
+    private bool pauseVisualEffectEnabled;
 
     public bool IsOpen => root != null && root.activeSelf;
 
     private void OnEnable()
     {
+        ResolvePauseVisualEffect();
         SubscribeQuestManagerEvents();
         LocalizationSettings.InitializationOperation.Completed += HandleLocalizationInitialized;
         LocalizationSettings.SelectedLocaleChanged += HandleSelectedLocaleChanged;
@@ -82,6 +88,7 @@ public class QuestJournalUI : MonoBehaviour
         LocalizationSettings.InitializationOperation.Completed -= HandleLocalizationInitialized;
         LocalizationSettings.SelectedLocaleChanged -= HandleSelectedLocaleChanged;
         UnsubscribeQuestManagerEvents();
+        DisablePauseVisualEffect();
     }
 
     private void HandleLocalizationInitialized(UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationHandle<UnityEngine.Localization.Settings.LocalizationSettings> _)
@@ -102,6 +109,8 @@ public class QuestJournalUI : MonoBehaviour
 
     public void Open()
     {
+        EnablePauseVisualEffect();
+
         if (root != null)
         {
             root.SetActive(true);
@@ -113,6 +122,8 @@ public class QuestJournalUI : MonoBehaviour
 
     public void Close()
     {
+        DisablePauseVisualEffect();
+
         if (root != null)
         {
             root.SetActive(false);
@@ -272,6 +283,44 @@ public class QuestJournalUI : MonoBehaviour
         }
 
         RefreshDetailsOnly();
+    }
+
+    private void ResolvePauseVisualEffect()
+    {
+        if (!usePauseVisualEffect || blackAndWhiteEffect != null)
+            return;
+
+        PauseMenuBlackAndWhiteEffect[] effects = FindObjectsByType<PauseMenuBlackAndWhiteEffect>(
+            FindObjectsInactive.Include,
+            FindObjectsSortMode.None);
+
+        if (effects != null && effects.Length > 0)
+            blackAndWhiteEffect = effects[0];
+    }
+
+    private void EnablePauseVisualEffect()
+    {
+        if (!usePauseVisualEffect || pauseVisualEffectEnabled)
+            return;
+
+        ResolvePauseVisualEffect();
+
+        if (blackAndWhiteEffect == null)
+            return;
+
+        blackAndWhiteEffect.EnablePauseEffect();
+        pauseVisualEffectEnabled = true;
+    }
+
+    private void DisablePauseVisualEffect()
+    {
+        if (!pauseVisualEffectEnabled)
+            return;
+
+        if (blackAndWhiteEffect != null)
+            blackAndWhiteEffect.DisablePauseEffect();
+
+        pauseVisualEffectEnabled = false;
     }
 
     private void SubscribeQuestManagerEvents()

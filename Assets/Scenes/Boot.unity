@@ -7956,13 +7956,13 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 247072153}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 90}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 696331075}
-  m_Father: {fileID: 2114441881}
+  m_Father: {fileID: 1797892139}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -7982,6 +7982,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MerchantMenuUI
   windowRoot: {fileID: 696331074}
+  blackAndWhiteEffect: {fileID: 1098623602}
+  usePauseVisualEffect: 1
   visibleRows:
   - {fileID: 117752002}
   - {fileID: 577480755}
@@ -9645,6 +9647,7 @@ Transform:
   - {fileID: 1209021692}
   - {fileID: 2114441881}
   - {fileID: 1404597683}
+  - {fileID: 1797892139}
   - {fileID: 774352750}
   - {fileID: 730128404}
   - {fileID: 863587237}
@@ -12549,15 +12552,15 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 407233380}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 90}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1779549417}
   - {fileID: 2145303992}
   - {fileID: 621628382}
-  m_Father: {fileID: 2114441881}
+  m_Father: {fileID: 1797892139}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -12577,6 +12580,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::QuestJournalUI
   root: {fileID: 407233380}
+  blackAndWhiteEffect: {fileID: 1098623602}
+  usePauseVisualEffect: 1
   activeQuestListUI: {fileID: 1489970316}
   completedQuestListUI: {fileID: 2079646656}
   mainTabSelectedObject: {fileID: 1974104442}
@@ -17411,12 +17416,12 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 556574412}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 90}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 100802059}
-  m_Father: {fileID: 2114441881}
+  m_Father: {fileID: 1797892139}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -30402,20 +30407,20 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1012992660}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 90}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 435965943}
   - {fileID: 1869983375}
-  m_Father: {fileID: 2114441881}
+  m_Father: {fileID: 1797892139}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1012992662
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30429,6 +30434,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DialogueUI
   root: {fileID: 1012992660}
+  blackAndWhiteEffect: {fileID: 1098623602}
+  usePauseVisualEffect: 1
   contentRoot: {fileID: 1869983374}
   loadingObject: {fileID: 0}
   speakerNameRoot: {fileID: 1101812531}
@@ -37122,6 +37129,8 @@ MonoBehaviour:
   menuRoot: {fileID: 556574412}
   equipmentMenuUI: {fileID: 334828095}
   statsControlsHintUI: {fileID: 839244368}
+  blackAndWhiteEffect: {fileID: 1098623602}
+  usePauseVisualEffect: 1
 --- !u!1 &1253149040
 GameObject:
   m_ObjectHideFlags: 0
@@ -51469,8 +51478,12 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
+  m_Children:
+  - {fileID: 556574413}
+  - {fileID: 1012992661}
+  - {fileID: 407233381}
+  - {fileID: 247072154}
+  m_Father: {fileID: 288330088}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -59314,10 +59327,6 @@ RectTransform:
   - {fileID: 572815874}
   - {fileID: 1113452340}
   - {fileID: 1857598853}
-  - {fileID: 1012992661}
-  - {fileID: 556574413}
-  - {fileID: 407233381}
-  - {fileID: 247072154}
   m_Father: {fileID: 288330088}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -59763,4 +59772,3 @@ SceneRoots:
   m_Roots:
   - {fileID: 288330088}
   - {fileID: 234606181}
-  - {fileID: 1797892139}

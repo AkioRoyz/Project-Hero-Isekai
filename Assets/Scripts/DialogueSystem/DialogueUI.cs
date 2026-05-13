@@ -60,6 +60,10 @@ public class DialogueUI : MonoBehaviour
     [Header("Root")]
     [SerializeField] private GameObject root;
 
+    [Header("Pause Visual Effect")]
+    [SerializeField] private PauseMenuBlackAndWhiteEffect blackAndWhiteEffect;
+    [SerializeField] private bool usePauseVisualEffect = true;
+
     [Header("Content Root")]
     [Tooltip("Основной контейнер содержимого диалога.")]
     [SerializeField] private GameObject contentRoot;
@@ -123,10 +127,13 @@ public class DialogueUI : MonoBehaviour
     [SerializeField] private float continueIndicatorMoveSpeed = 2f;
 
     private bool isContinueIndicatorVisible;
+    private bool pauseVisualEffectEnabled;
     private Vector2 continueIndicatorStartAnchoredPosition;
 
     private void Awake()
     {
+        ResolvePauseVisualEffect();
+
         if (continueIndicatorRect != null)
         {
             continueIndicatorStartAnchoredPosition = continueIndicatorRect.anchoredPosition;
@@ -138,6 +145,11 @@ public class DialogueUI : MonoBehaviour
         ResetContinueIndicatorPosition();
     }
 
+    private void OnDisable()
+    {
+        DisablePauseVisualEffect();
+    }
+
     private void Update()
     {
         UpdateContinueIndicatorAnimation();
@@ -145,12 +157,16 @@ public class DialogueUI : MonoBehaviour
 
     public void Show()
     {
+        EnablePauseVisualEffect();
+
         if (root != null)
             root.SetActive(true);
     }
 
     public void Hide()
     {
+        DisablePauseVisualEffect();
+
         if (root != null)
             root.SetActive(false);
 
@@ -301,6 +317,44 @@ public class DialogueUI : MonoBehaviour
         }
 
         ResetContinueIndicatorPosition();
+    }
+
+    private void ResolvePauseVisualEffect()
+    {
+        if (!usePauseVisualEffect || blackAndWhiteEffect != null)
+            return;
+
+        PauseMenuBlackAndWhiteEffect[] effects = FindObjectsByType<PauseMenuBlackAndWhiteEffect>(
+            FindObjectsInactive.Include,
+            FindObjectsSortMode.None);
+
+        if (effects != null && effects.Length > 0)
+            blackAndWhiteEffect = effects[0];
+    }
+
+    private void EnablePauseVisualEffect()
+    {
+        if (!usePauseVisualEffect || pauseVisualEffectEnabled)
+            return;
+
+        ResolvePauseVisualEffect();
+
+        if (blackAndWhiteEffect == null)
+            return;
+
+        blackAndWhiteEffect.EnablePauseEffect();
+        pauseVisualEffectEnabled = true;
+    }
+
+    private void DisablePauseVisualEffect()
+    {
+        if (!pauseVisualEffectEnabled)
+            return;
+
+        if (blackAndWhiteEffect != null)
+            blackAndWhiteEffect.DisablePauseEffect();
+
+        pauseVisualEffectEnabled = false;
     }
 
     private void ClearChoiceSlot(ChoiceSlot slot)

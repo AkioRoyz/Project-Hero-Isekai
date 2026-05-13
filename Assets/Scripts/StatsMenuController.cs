@@ -8,7 +8,12 @@ public class StatsMenuController : MonoBehaviour
     [SerializeField] private EquipmentMenuUI equipmentMenuUI;
     [SerializeField] private StatsControlsHintUI statsControlsHintUI;
 
+    [Header("Pause Visual Effect")]
+    [SerializeField] private PauseMenuBlackAndWhiteEffect blackAndWhiteEffect;
+    [SerializeField] private bool usePauseVisualEffect = true;
+
     private bool isOpened;
+    private bool pauseVisualEffectEnabled;
     private GameInput subscribedInput;
 
     private void Awake()
@@ -30,6 +35,7 @@ public class StatsMenuController : MonoBehaviour
     {
         SceneManager.sceneLoaded -= HandleSceneLoaded;
         UnbindInput();
+        DisablePauseVisualEffect();
     }
 
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -44,6 +50,46 @@ public class StatsMenuController : MonoBehaviour
         gameInput = GameInput.Instance != null
             ? GameInput.Instance
             : FindFirstObjectByType<GameInput>();
+
+        ResolvePauseVisualEffect();
+    }
+
+    private void ResolvePauseVisualEffect()
+    {
+        if (!usePauseVisualEffect || blackAndWhiteEffect != null)
+            return;
+
+        PauseMenuBlackAndWhiteEffect[] effects = FindObjectsByType<PauseMenuBlackAndWhiteEffect>(
+            FindObjectsInactive.Include,
+            FindObjectsSortMode.None);
+
+        if (effects != null && effects.Length > 0)
+            blackAndWhiteEffect = effects[0];
+    }
+
+    private void EnablePauseVisualEffect()
+    {
+        if (!usePauseVisualEffect || pauseVisualEffectEnabled)
+            return;
+
+        ResolvePauseVisualEffect();
+
+        if (blackAndWhiteEffect == null)
+            return;
+
+        blackAndWhiteEffect.EnablePauseEffect();
+        pauseVisualEffectEnabled = true;
+    }
+
+    private void DisablePauseVisualEffect()
+    {
+        if (!pauseVisualEffectEnabled)
+            return;
+
+        if (blackAndWhiteEffect != null)
+            blackAndWhiteEffect.DisablePauseEffect();
+
+        pauseVisualEffectEnabled = false;
     }
 
     private void RebindInput()
@@ -72,6 +118,8 @@ public class StatsMenuController : MonoBehaviour
     private void ForceClosedVisual()
     {
         isOpened = false;
+
+        DisablePauseVisualEffect();
 
         if (menuRoot != null)
             menuRoot.SetActive(false);
@@ -115,6 +163,7 @@ public class StatsMenuController : MonoBehaviour
 
         isOpened = true;
         menuRoot.SetActive(true);
+        EnablePauseVisualEffect();
 
         if (GameStateManager.Instance != null)
             GameStateManager.Instance.SetState(GameState.Menu);
@@ -136,6 +185,7 @@ public class StatsMenuController : MonoBehaviour
             return;
 
         isOpened = false;
+        DisablePauseVisualEffect();
         menuRoot.SetActive(false);
 
         if (equipmentMenuUI != null)

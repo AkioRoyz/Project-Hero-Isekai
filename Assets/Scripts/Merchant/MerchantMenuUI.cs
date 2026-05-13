@@ -35,6 +35,10 @@ public class MerchantMenuUI : MonoBehaviour
     [Header("Window")]
     [SerializeField] private GameObject windowRoot;
 
+    [Header("Pause Visual Effect")]
+    [SerializeField] private PauseMenuBlackAndWhiteEffect blackAndWhiteEffect;
+    [SerializeField] private bool usePauseVisualEffect = true;
+
     [Header("List")]
     [SerializeField] private MerchantListRowUI[] visibleRows = new MerchantListRowUI[10];
     [SerializeField] private GameObject moreUpIcon;
@@ -88,6 +92,7 @@ public class MerchantMenuUI : MonoBehaviour
 
     private int selectedIndex;
     private int firstVisibleIndex;
+    private bool pauseVisualEffectEnabled;
 
     private bool IsOpen => windowRoot != null && windowRoot.activeSelf;
 
@@ -115,6 +120,7 @@ public class MerchantMenuUI : MonoBehaviour
     private void OnDisable()
     {
         UnsubscribeFromEvents();
+        DisablePauseVisualEffect();
     }
 
     private void OnDestroy()
@@ -123,6 +129,7 @@ public class MerchantMenuUI : MonoBehaviour
             Instance = null;
 
         UnsubscribeFromEvents();
+        DisablePauseVisualEffect();
     }
 
     public bool OpenForMerchant(IMerchantSource merchantSource)
@@ -150,6 +157,7 @@ public class MerchantMenuUI : MonoBehaviour
         firstVisibleIndex = 0;
 
         windowRoot.SetActive(true);
+        EnablePauseVisualEffect();
 
         if (gameInput != null)
             gameInput.SwitchToMenuMode();
@@ -168,6 +176,8 @@ public class MerchantMenuUI : MonoBehaviour
         currentStatus = MerchantStatus.None;
         selectedIndex = 0;
         firstVisibleIndex = 0;
+
+        DisablePauseVisualEffect();
 
         if (windowRoot != null)
             windowRoot.SetActive(false);
@@ -190,6 +200,46 @@ public class MerchantMenuUI : MonoBehaviour
 
         if (goldSystem == null)
             goldSystem = FindFirstObjectByType<GoldSystem>();
+
+        ResolvePauseVisualEffect();
+    }
+
+    private void ResolvePauseVisualEffect()
+    {
+        if (!usePauseVisualEffect || blackAndWhiteEffect != null)
+            return;
+
+        PauseMenuBlackAndWhiteEffect[] effects = FindObjectsByType<PauseMenuBlackAndWhiteEffect>(
+            FindObjectsInactive.Include,
+            FindObjectsSortMode.None);
+
+        if (effects != null && effects.Length > 0)
+            blackAndWhiteEffect = effects[0];
+    }
+
+    private void EnablePauseVisualEffect()
+    {
+        if (!usePauseVisualEffect || pauseVisualEffectEnabled)
+            return;
+
+        ResolvePauseVisualEffect();
+
+        if (blackAndWhiteEffect == null)
+            return;
+
+        blackAndWhiteEffect.EnablePauseEffect();
+        pauseVisualEffectEnabled = true;
+    }
+
+    private void DisablePauseVisualEffect()
+    {
+        if (!pauseVisualEffectEnabled)
+            return;
+
+        if (blackAndWhiteEffect != null)
+            blackAndWhiteEffect.DisablePauseEffect();
+
+        pauseVisualEffectEnabled = false;
     }
 
     private void SubscribeToEvents()
