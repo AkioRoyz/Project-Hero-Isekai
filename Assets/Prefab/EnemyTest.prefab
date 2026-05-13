@@ -217,7 +217,7 @@ Transform:
   m_GameObject: {fileID: 7780854530686288632}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.8, z: 0}
+  m_LocalPosition: {x: 0, y: 0.38, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -554,6 +554,14 @@ MonoBehaviour:
   windupDuration: 0.3
   recoveryDuration: 0.45
   attackFailSafeDuration: 0.9
+  enableLightHitReaction: 1
+  lightHitDuration: 0.1
+  lightHitInterruptsWindup: 0
+  lightHitInterruptsAttack: 0
+  lightHitInterruptsRecovery: 1
+  heavyHitInterruptsWindup: 1
+  heavyHitInterruptsAttack: 1
+  heavyHitInterruptsRecovery: 1
   attackId: enemy_melee_01
   attackDamage: 5
   attackRandomDamageMinMultiplier: 0.95

@@ -23,6 +23,10 @@ MonoBehaviour:
     m_Key: inGame.inventory
     m_Metadata:
       m_Items: []
+  - m_Id: 28522928954929152
+    m_Key: inGame.Quest
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

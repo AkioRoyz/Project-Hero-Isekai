@@ -1,10 +1,15 @@
 using System;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 public class PlayerTargetingSystem : MonoBehaviour
 {
+    private enum MarkerFollowPoint
+    {
+        AimPoint,
+        TargetRoot
+    }
+
     [Header("References")]
     [SerializeField] private GameInput gameInput;
     [SerializeField] private Transform targetingOrigin;
@@ -25,9 +30,18 @@ public class PlayerTargetingSystem : MonoBehaviour
     [SerializeField][Min(0f)] private float minHorizontalOffsetForSideDecision = 0.10f;
 
     [Header("Marker")]
+    [SerializeField] private TargetMarkerView markerInScene;
     [SerializeField] private TargetMarkerView markerPrefab;
     [SerializeField] private Transform markerParent;
     [SerializeField] private bool createMarkerIfMissing = true;
+
+    [Header("Marker Visual Override")]
+    [SerializeField] private bool overrideMarkerVisualsFromThisScript = true;
+    [SerializeField] private Sprite markerSprite;
+    [SerializeField] private Color markerColor = Color.white;
+
+    [Header("Marker Follow")]
+    [SerializeField] private MarkerFollowPoint markerFollowPoint = MarkerFollowPoint.AimPoint;
 
     private readonly Collider2D[] targetSearchResults = new Collider2D[64];
     private readonly HashSet<int> seenTargetIds = new HashSet<int>();
@@ -47,7 +61,7 @@ public class PlayerTargetingSystem : MonoBehaviour
     {
         ResolveReferences();
         EnsureMarkerInstance();
-        UpdateMarkerVisual();
+        HideMarker();
     }
 
     private void OnEnable()
@@ -57,6 +71,7 @@ public class PlayerTargetingSystem : MonoBehaviour
         if (gameInput != null)
             gameInput.OnToggleTargeting += HandleToggleTargeting;
 
+        EnsureMarkerInstance();
         UpdateMarkerVisual();
     }
 
@@ -65,11 +80,7 @@ public class PlayerTargetingSystem : MonoBehaviour
         if (gameInput != null)
             gameInput.OnToggleTargeting -= HandleToggleTargeting;
 
-        if (markerInstance != null)
-        {
-            markerInstance.SetTarget(null);
-            markerInstance.SetVisible(false);
-        }
+        HideMarker();
     }
 
     private void Update()
@@ -79,7 +90,7 @@ public class PlayerTargetingSystem : MonoBehaviour
             if (currentTarget != null)
                 SetCurrentTarget(null);
 
-            UpdateMarkerVisual();
+            HideMarker();
             return;
         }
 
@@ -108,13 +119,14 @@ public class PlayerTargetingSystem : MonoBehaviour
         if (!autoTargetingEnabled)
         {
             SetCurrentTarget(null);
+            HideMarker();
         }
         else
         {
             RefreshTarget();
+            UpdateMarkerVisual();
         }
 
-        UpdateMarkerVisual();
         OnAutoTargetingEnabledChanged?.Invoke(autoTargetingEnabled);
     }
 
@@ -135,8 +147,12 @@ public class PlayerTargetingSystem : MonoBehaviour
         if (!IsTargetValid(currentTarget, searchRadius * currentTargetRetentionMultiplier))
             return false;
 
+        Transform targetPoint = GetAimPointOrTransform(currentTarget);
+        if (targetPoint == null)
+            return false;
+
         Vector3 originPosition = GetOriginPosition();
-        Vector3 delta = currentTarget.AimPoint.position - originPosition;
+        Vector3 delta = targetPoint.position - originPosition;
 
         if (Mathf.Abs(delta.x) <= minHorizontalOffsetForSideDecision)
         {
@@ -150,9 +166,11 @@ public class PlayerTargetingSystem : MonoBehaviour
 
     public bool TryGetCurrentTargetAimPoint(out Vector3 aimPoint)
     {
-        if (IsTargetValid(currentTarget, searchRadius * currentTargetRetentionMultiplier))
+        Transform targetPoint = GetAimPointOrTransform(currentTarget);
+
+        if (targetPoint != null && IsTargetValid(currentTarget, searchRadius * currentTargetRetentionMultiplier))
         {
-            aimPoint = currentTarget.AimPoint.position;
+            aimPoint = targetPoint.position;
             return true;
         }
 
@@ -170,10 +188,12 @@ public class PlayerTargetingSystem : MonoBehaviour
         if (!autoTargetingEnabled)
         {
             SetCurrentTarget(null);
+            HideMarker();
             return;
         }
 
         Vector3 originPosition = GetOriginPosition();
+
         int hitCount = Physics2D.OverlapCircleNonAlloc(
             originPosition,
             searchRadius,
@@ -202,7 +222,11 @@ public class PlayerTargetingSystem : MonoBehaviour
             if (!seenTargetIds.Add(candidateId))
                 continue;
 
-            float distance = Vector2.Distance(originPosition, candidate.AimPoint.position);
+            Transform candidatePoint = GetAimPointOrTransform(candidate);
+            if (candidatePoint == null)
+                continue;
+
+            float distance = Vector2.Distance(originPosition, candidatePoint.position);
             float score = distance;
 
             if (candidate == currentTarget)
@@ -236,7 +260,11 @@ public class PlayerTargetingSystem : MonoBehaviour
         if (candidate.Team != targetTeam)
             return false;
 
-        float distance = Vector2.Distance(GetOriginPosition(), candidate.AimPoint.position);
+        Transform targetPoint = GetAimPointOrTransform(candidate);
+        if (targetPoint == null)
+            return false;
+
+        float distance = Vector2.Distance(GetOriginPosition(), targetPoint.position);
         if (distance > maxDistance)
             return false;
 
@@ -254,7 +282,11 @@ public class PlayerTargetingSystem : MonoBehaviour
         if (target.Team != targetTeam)
             return false;
 
-        float distance = Vector2.Distance(GetOriginPosition(), target.AimPoint.position);
+        Transform targetPoint = GetAimPointOrTransform(target);
+        if (targetPoint == null)
+            return false;
+
+        float distance = Vector2.Distance(GetOriginPosition(), targetPoint.position);
         if (distance > maxDistance)
             return false;
 
@@ -272,6 +304,33 @@ public class PlayerTargetingSystem : MonoBehaviour
             target = hitCollider.GetComponent<CombatTarget>();
 
         return target;
+    }
+
+    private Transform GetAimPointOrTransform(CombatTarget target)
+    {
+        if (target == null)
+            return null;
+
+        if (target.AimPoint != null)
+            return target.AimPoint;
+
+        return target.transform;
+    }
+
+    private Transform GetMarkerFollowTransform(CombatTarget target)
+    {
+        if (target == null)
+            return null;
+
+        switch (markerFollowPoint)
+        {
+            case MarkerFollowPoint.TargetRoot:
+                return target.transform;
+
+            case MarkerFollowPoint.AimPoint:
+            default:
+                return GetAimPointOrTransform(target);
+        }
     }
 
     private void SetCurrentTarget(CombatTarget newTarget)
@@ -303,7 +362,19 @@ public class PlayerTargetingSystem : MonoBehaviour
     private void EnsureMarkerInstance()
     {
         if (markerInstance != null)
+        {
+            ApplyMarkerVisualSettings();
             return;
+        }
+
+        if (markerInScene != null)
+        {
+            markerInstance = markerInScene;
+            ApplyMarkerVisualSettings();
+            markerInstance.SetTarget(null, false);
+            markerInstance.SetVisible(false);
+            return;
+        }
 
         Transform parent = markerParent != null ? markerParent : transform;
 
@@ -311,6 +382,10 @@ public class PlayerTargetingSystem : MonoBehaviour
         {
             markerInstance = Instantiate(markerPrefab, parent);
             markerInstance.name = "TargetMarker_Instance";
+
+            ApplyMarkerVisualSettings();
+            markerInstance.SetTarget(null, false);
+            markerInstance.SetVisible(false);
             return;
         }
 
@@ -318,6 +393,13 @@ public class PlayerTargetingSystem : MonoBehaviour
             return;
 
         markerInstance = CreateFallbackMarker(parent);
+
+        if (markerInstance != null)
+        {
+            ApplyMarkerVisualSettings();
+            markerInstance.SetTarget(null, false);
+            markerInstance.SetVisible(false);
+        }
     }
 
     private TargetMarkerView CreateFallbackMarker(Transform parent)
@@ -325,13 +407,30 @@ public class PlayerTargetingSystem : MonoBehaviour
         GameObject markerObject = new GameObject("TargetMarker_Fallback");
         markerObject.transform.SetParent(parent, false);
 
-        TextMeshPro textMesh = markerObject.AddComponent<TextMeshPro>();
-        textMesh.text = "▼";
-        textMesh.fontSize = 3.2f;
-        textMesh.alignment = TextAlignmentOptions.Center;
+        SpriteRenderer createdSpriteRenderer = markerObject.AddComponent<SpriteRenderer>();
+        createdSpriteRenderer.sprite = markerSprite;
+        createdSpriteRenderer.color = markerColor;
+        createdSpriteRenderer.sortingOrder = 220;
 
         TargetMarkerView view = markerObject.AddComponent<TargetMarkerView>();
+        view.SetSprite(markerSprite);
+        view.SetColor(markerColor);
+
         return view;
+    }
+
+    private void ApplyMarkerVisualSettings()
+    {
+        if (markerInstance == null)
+            return;
+
+        if (!overrideMarkerVisualsFromThisScript)
+            return;
+
+        if (markerSprite != null)
+            markerInstance.SetSprite(markerSprite);
+
+        markerInstance.SetColor(markerColor);
     }
 
     private void UpdateMarkerVisual()
@@ -343,18 +442,33 @@ public class PlayerTargetingSystem : MonoBehaviour
 
         bool shouldShow =
             autoTargetingEnabled &&
-            currentTarget != null &&
-            currentTarget.IsTargetable;
+            IsTargetValid(currentTarget, searchRadius * currentTargetRetentionMultiplier);
 
         if (!shouldShow)
         {
-            markerInstance.SetTarget(null);
-            markerInstance.SetVisible(false);
+            HideMarker();
             return;
         }
 
-        markerInstance.SetTarget(currentTarget.AimPoint != null ? currentTarget.AimPoint : currentTarget.transform);
+        Transform markerTarget = GetMarkerFollowTransform(currentTarget);
+
+        if (markerTarget == null)
+        {
+            HideMarker();
+            return;
+        }
+
+        markerInstance.SetTarget(markerTarget, true);
         markerInstance.SetVisible(true);
+    }
+
+    private void HideMarker()
+    {
+        if (markerInstance == null)
+            return;
+
+        markerInstance.SetTarget(null, false);
+        markerInstance.SetVisible(false);
     }
 
 #if UNITY_EDITOR
@@ -368,11 +482,16 @@ public class PlayerTargetingSystem : MonoBehaviour
 
         Gizmos.DrawWireSphere(origin, searchRadius);
 
-        if (currentTarget != null && currentTarget.AimPoint != null)
+        if (currentTarget != null)
         {
-            Gizmos.color = new Color(1f, 0.35f, 0.2f, 0.95f);
-            Gizmos.DrawLine(origin, currentTarget.AimPoint.position);
-            Gizmos.DrawWireSphere(currentTarget.AimPoint.position, 0.08f);
+            Transform targetPoint = GetAimPointOrTransform(currentTarget);
+
+            if (targetPoint != null)
+            {
+                Gizmos.color = new Color(1f, 0.35f, 0.2f, 0.95f);
+                Gizmos.DrawLine(origin, targetPoint.position);
+                Gizmos.DrawWireSphere(targetPoint.position, 0.08f);
+            }
         }
     }
 #endif

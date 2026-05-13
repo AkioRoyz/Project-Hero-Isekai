@@ -26,6 +26,10 @@ MonoBehaviour:
     m_Localized: Inventory
     m_Metadata:
       m_Items: []
+  - m_Id: 28522928954929152
+    m_Localized: QUEST
+    m_Metadata:
+      m_Items: []
   references:
     version: 2
     RefIds: []
