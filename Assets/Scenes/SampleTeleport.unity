@@ -1282,6 +1282,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: merchant_predmetu
       objectReference: {fileID: 0}
+    - target: {fileID: 5931485474022227843, guid: b2ff964321ffe5c4a809137c9a2af90a, type: 3}
+      propertyPath: m_SortingOrder
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7637124704139471257, guid: b2ff964321ffe5c4a809137c9a2af90a, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7637124704139471257, guid: b2ff964321ffe5c4a809137c9a2af90a, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7637124704139471257, guid: b2ff964321ffe5c4a809137c9a2af90a, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7637124704139471257, guid: b2ff964321ffe5c4a809137c9a2af90a, type: 3}
       propertyPath: m_SortingOrder
       value: 1
@@ -1547,6 +1563,22 @@ PrefabInstance:
     - target: {fileID: 5812781625022893479, guid: b2ff964321ffe5c4a809137c9a2af90a, type: 3}
       propertyPath: m_Name
       value: merchat_zelii
+      objectReference: {fileID: 0}
+    - target: {fileID: 5931485474022227843, guid: b2ff964321ffe5c4a809137c9a2af90a, type: 3}
+      propertyPath: m_SortingOrder
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7637124704139471257, guid: b2ff964321ffe5c4a809137c9a2af90a, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7637124704139471257, guid: b2ff964321ffe5c4a809137c9a2af90a, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7637124704139471257, guid: b2ff964321ffe5c4a809137c9a2af90a, type: 3}
+      propertyPath: m_Color.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7637124704139471257, guid: b2ff964321ffe5c4a809137c9a2af90a, type: 3}
       propertyPath: m_SortingOrder
